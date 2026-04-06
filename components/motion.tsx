@@ -126,7 +126,6 @@ const staggerItemReduced: Variants = {
 };
 
 export function StaggerList({ children, className = "" }: Omit<Props, "delay">) {
-  const reduced = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: MARGIN });
   return (

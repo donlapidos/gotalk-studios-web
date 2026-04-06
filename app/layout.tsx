@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
+import { SanityLive } from "@/sanity/lib/live";
+import { draftMode } from "next/headers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,11 +24,12 @@ export const metadata: Metadata = {
   keywords: ["GoTalk Studios", "Sarawak", "talk show", "podcast", "Kuching"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isEnabled: preview } = await draftMode()
   return (
     <html
       lang="en"
@@ -35,6 +38,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#111111] text-white">
         {children}
+        {preview && <SanityLive />}
       </body>
     </html>
   );

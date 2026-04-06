@@ -205,16 +205,7 @@ export default function AboutPage() {
       <Navbar />
       <main className="pt-16">
         <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden noise">
-          <div className="absolute inset-0">
-            <Image
-              src="https://picsum.photos/seed/aboutbg/1920/500"
-              alt=""
-              fill
-              className="object-cover opacity-10"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/50 to-[#111111]" />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0D] to-[#111111]" />
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
             <FadeIn delay={0.1}>

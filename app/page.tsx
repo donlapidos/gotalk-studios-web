@@ -3,7 +3,9 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import { videoIds } from "@/lib/episodes";
+import { sanityFetch } from "@/sanity/lib/live";
+import { FEATURED_EPISODE_QUERY } from "@/sanity/lib/queries";
+import { extractYouTubeId } from "@/lib/youtube";
 import {
   FadeUp,
   FadeIn,
@@ -20,17 +22,8 @@ import {
 function HeroSection() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end bg-[#111111] overflow-hidden noise">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="https://picsum.photos/seed/gotalkstudio/1920/1080"
-          alt=""
-          fill
-          priority
-          className="object-cover opacity-20"
-          sizes="100vw"
-        />
-      </div>
+      {/* Background gradient */}
+      <div className="absolute inset-0 z-0 bg-[#0D0D0D]" />
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#111111]/70 via-[#111111]/40 to-[#111111]" />
@@ -137,7 +130,24 @@ function StatsBar() {
 
 // ─── Featured Episode ─────────────────────────────────────────────────────────
 
-function FeaturedEpisode() {
+type FeaturedEp = {
+  _id: string
+  title: string
+  episodeNumber: number
+  segment: string
+  guestName: string
+  guestCompany: string | null
+  youtubeUrl: string | null
+  description: string | null
+} | null
+
+function FeaturedEpisode({ episode }: { episode: FeaturedEp }) {
+  if (!episode) return null;
+
+  const videoId = extractYouTubeId(episode.youtubeUrl);
+  const ytUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : null;
+  const guest = [episode.guestName, episode.guestCompany].filter(Boolean).join(' — ');
+
   return (
     <section className="py-24 bg-[#111111]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -151,13 +161,12 @@ function FeaturedEpisode() {
         </FadeUp>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Thumbnail */}
+          {/* Embed */}
           <ScaleIn>
             <YouTubeEmbed
-              videoId={videoIds.ep11}
-              title="What Would You Do If You Couldn't Say No to a Job?"
-              badge="EP 11"
-              duration="45:32"
+              videoId={videoId}
+              title={episode.title}
+              badge={`EP ${episode.episodeNumber}`}
             />
           </ScaleIn>
 
@@ -165,38 +174,39 @@ function FeaturedEpisode() {
           <div>
             <FadeUp delay={0.1}>
               <p className="text-[10px] text-white/35 uppercase tracking-[0.3em] mb-2">
-                GoTalk Business
+                GoTalk {episode.segment}
               </p>
             </FadeUp>
             <LineRevealScroll delay={0.15}>
               <h2 className="font-[family-name:var(--font-bebas-neue)] text-4xl lg:text-[3.25rem] text-white leading-tight mb-4 tracking-wide">
-                What Would You Do If You Couldn&apos;t Say No to a Job?
+                {episode.title}
               </h2>
             </LineRevealScroll>
             <FadeUp delay={0.2}>
               <p className="text-sm text-[#CC0000] font-semibold mb-5 uppercase tracking-widest">
-                Jasveena — Jasveena Cleaning Service
+                {guest}
               </p>
             </FadeUp>
-            <FadeUp delay={0.25}>
-              <p className="text-white/65 leading-relaxed mb-8 text-sm">
-                Jasveena built her cleaning business from scratch while juggling
-                a full-time job she couldn&apos;t afford to quit. In this
-                episode, she opens up about the sacrifices, the near-burnouts,
-                and the moment she finally bet on herself.
-              </p>
-            </FadeUp>
-            <FadeUp delay={0.3}>
-              <Link
-                href="/episodes/ep11"
-                className="group inline-flex items-center gap-3 text-white font-bold tracking-[0.15em] uppercase text-sm border-b-2 border-[#CC0000] pb-1 hover:text-[#CC0000] transition-colors"
-              >
-                WATCH NOW
-                <span className="group-hover:translate-x-1 transition-transform inline-block">
-                  →
-                </span>
-              </Link>
-            </FadeUp>
+            {episode.description && (
+              <FadeUp delay={0.25}>
+                <p className="text-white/65 leading-relaxed mb-8 text-sm">
+                  {episode.description}
+                </p>
+              </FadeUp>
+            )}
+            {ytUrl && (
+              <FadeUp delay={0.3}>
+                <a
+                  href={ytUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 text-white font-bold tracking-[0.15em] uppercase text-sm border-b-2 border-[#CC0000] pb-1 hover:text-[#CC0000] transition-colors"
+                >
+                  WATCH ON YOUTUBE
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                </a>
+              </FadeUp>
+            )}
           </div>
         </div>
       </div>
@@ -319,17 +329,8 @@ function FooterCTA() {
     <section className="relative py-28 lg:py-36 bg-[#111111] overflow-hidden">
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
 
-      {/* Background image with heavy overlay */}
-      <div className="absolute inset-0">
-        <Image
-          src="https://picsum.photos/seed/gotalkchair/1440/600"
-          alt=""
-          fill
-          className="object-cover opacity-10"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-[#111111]/90" />
-      </div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-[#111111]" />
 
       {/* Watermark */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
@@ -378,14 +379,16 @@ function FooterCTA() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { data: featuredEpisode } = await sanityFetch({ query: FEATURED_EPISODE_QUERY });
+
   return (
     <>
       <Navbar />
       <main>
         <HeroSection />
         <StatsBar />
-        <FeaturedEpisode />
+        <FeaturedEpisode episode={featuredEpisode} />
         <ShowSegments />
         <FooterCTA />
       </main>
