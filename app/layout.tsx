@@ -3,6 +3,7 @@ import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { SanityLive } from "@/sanity/lib/live";
 import { draftMode } from "next/headers";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,6 +40,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col bg-[#111111] text-white">
         {children}
         {preview && <SanityLive />}
+        <Analytics />
       </body>
     </html>
   );
