@@ -51,13 +51,16 @@ export default function Footer() {
             © 2026 GoTalk Studios. All Rights Reserved.
           </p>
           <div className="flex gap-6">
-            {["Privacy Policy", "Terms of Service"].map((item) => (
+            {[
+              { label: "Privacy Policy",   href: "/privacy-policy" },
+              { label: "Terms of Service", href: "/terms-of-service" },
+            ].map((item) => (
               <Link
-                key={item}
-                href="#"
+                key={item.label}
+                href={item.href}
                 className="text-xs text-white/30 hover:text-white/60 transition-colors"
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>
