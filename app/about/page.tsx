@@ -5,8 +5,18 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "About — GoTalk Studios",
-  description: "GoTalk Studios is Sarawak's homegrown media studio. Meet the hosts Lionel Lapidos and Gordon Surein Raj.",
+  title:       "About GoTalk Studios | Kuching, Sarawak",
+  description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
+  openGraph: {
+    title:       "About GoTalk Studios | Kuching, Sarawak",
+    description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
+    url:         "https://gotalkstudios.com/about",
+    type:        "website",
+  },
+  twitter: {
+    title:       "About GoTalk Studios | Kuching, Sarawak",
+    description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
+  },
 };
 import {
   FadeUp,

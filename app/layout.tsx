@@ -19,10 +19,24 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "GoTalk Studios — Real People. Real Stories. Real Sarawak.",
+  metadataBase: new URL("https://gotalkstudios.com"),
+  title: {
+    default:  "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
+    template: "%s | GoTalk Studios",
+  },
   description:
     "GoTalk Studios is Sarawak's home for honest conversations — with the entrepreneurs building tomorrow, the leaders shaping today, and the icons defining our culture.",
   keywords: ["GoTalk Studios", "Sarawak", "talk show", "podcast", "Kuching"],
+  openGraph: {
+    siteName: "GoTalk Studios",
+    images:   [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "GoTalk Studios — Real People. Real Stories. Real Sarawak." }],
+    locale:   "en_MY",
+    type:     "website",
+  },
+  twitter: {
+    card:   "summary_large_image",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default async function RootLayout({

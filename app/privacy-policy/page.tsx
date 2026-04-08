@@ -3,8 +3,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — GoTalk Studios",
+  title:       "Privacy Policy | GoTalk Studios",
   description: "How GoTalk Studios collects, uses, and protects your personal information.",
+  openGraph: {
+    title:       "Privacy Policy | GoTalk Studios",
+    description: "How GoTalk Studios collects, uses, and protects your personal information.",
+    url:         "https://gotalkstudios.com/privacy-policy",
+    type:        "website",
+  },
+  twitter: {
+    title:       "Privacy Policy | GoTalk Studios",
+    description: "How GoTalk Studios collects, uses, and protects your personal information.",
+  },
 };
 
 const sections = [

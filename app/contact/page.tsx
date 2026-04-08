@@ -4,9 +4,18 @@ import Footer from "@/components/Footer";
 import { GuestInquiryForm, SponsorshipForm, StudioInfo } from "@/components/ContactForms";
 
 export const metadata: Metadata = {
-  title: "Contact — GoTalk Studios",
-  description:
-    "Apply to be a guest, explore sponsorship opportunities, or just say hello. GoTalk Studios is always listening.",
+  title:       "Book a Guest Spot or Sponsorship | GoTalk Studios",
+  description: "Apply to be a guest on GoTalk or partner with us as a sponsor. Reach Sarawak's most engaged local audience.",
+  openGraph: {
+    title:       "Book a Guest Spot or Sponsorship | GoTalk Studios",
+    description: "Apply to be a guest on GoTalk or partner with us as a sponsor. Reach Sarawak's most engaged local audience.",
+    url:         "https://gotalkstudios.com/contact",
+    type:        "website",
+  },
+  twitter: {
+    title:       "Book a Guest Spot or Sponsorship | GoTalk Studios",
+    description: "Apply to be a guest on GoTalk or partner with us as a sponsor. Reach Sarawak's most engaged local audience.",
+  },
 };
 
 export default function ContactPage() {

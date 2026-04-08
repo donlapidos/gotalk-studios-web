@@ -3,8 +3,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — GoTalk Studios",
+  title:       "Terms of Service | GoTalk Studios",
   description: "The terms and conditions governing your use of the GoTalk Studios website and services.",
+  openGraph: {
+    title:       "Terms of Service | GoTalk Studios",
+    description: "The terms and conditions governing your use of the GoTalk Studios website and services.",
+    url:         "https://gotalkstudios.com/terms-of-service",
+    type:        "website",
+  },
+  twitter: {
+    title:       "Terms of Service | GoTalk Studios",
+    description: "The terms and conditions governing your use of the GoTalk Studios website and services.",
+  },
 };
 
 const sections = [

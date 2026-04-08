@@ -27,10 +27,33 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = await getPost(slug)
-  if (!post) return { title: "Post Not Found — GoTalk Studios" }
+  if (!post) return { title: "Post Not Found" }
+
+  const description = post.excerpt ?? undefined
+  let ogImageUrl = '/og-image.jpg'
+  if (post.featuredImage) {
+    try {
+      ogImageUrl = urlFor(post.featuredImage as Parameters<typeof urlFor>[0]).width(1200).height(630).fit('crop').url()
+    } catch { /* fall back to default */ }
+  }
+  const pageUrl = `https://gotalkstudios.com/blog/${slug}`
+
   return {
-    title: `${post.title} — GoTalk Studios`,
-    description: post.excerpt ?? undefined,
+    title:       post.title,
+    description,
+    openGraph: {
+      title:       post.title,
+      description,
+      url:         pageUrl,
+      type:        'article',
+      images:      [{ url: ogImageUrl, width: 1200, height: 630, alt: post.title }],
+      publishedTime: post.publishedAt ?? undefined,
+    },
+    twitter: {
+      title:       post.title,
+      description,
+      images:      [ogImageUrl],
+    },
   }
 }
 

@@ -17,8 +17,18 @@ import {
 } from "@/components/motion";
 
 export const metadata: Metadata = {
-  title: "Blog — GoTalk Studios",
-  description: "Our take on the stories, people, and ideas moving Sarawak forward.",
+  title:       "From The Studio | GoTalk Studios Blog",
+  description: "Insights, stories, and ideas from the GoTalk Studios team in Kuching, Sarawak.",
+  openGraph: {
+    title:       "From The Studio | GoTalk Studios Blog",
+    description: "Insights, stories, and ideas from the GoTalk Studios team in Kuching, Sarawak.",
+    url:         "https://gotalkstudios.com/blog",
+    type:        "website",
+  },
+  twitter: {
+    title:       "From The Studio | GoTalk Studios Blog",
+    description: "Insights, stories, and ideas from the GoTalk Studios team in Kuching, Sarawak.",
+  },
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────

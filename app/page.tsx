@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -6,6 +7,21 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { sanityFetch } from "@/sanity/lib/live";
 import { FEATURED_EPISODE_QUERY } from "@/sanity/lib/queries";
 import { extractYouTubeId } from "@/lib/youtube";
+
+export const metadata: Metadata = {
+  title: "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
+  description: "GoTalk Studios is Sarawak's home for honest conversations with entrepreneurs, leaders, and icons. Watch on YouTube.",
+  openGraph: {
+    title:       "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
+    description: "GoTalk Studios is Sarawak's home for honest conversations with entrepreneurs, leaders, and icons. Watch on YouTube.",
+    url:         "https://gotalkstudios.com",
+    type:        "website",
+  },
+  twitter: {
+    title:       "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
+    description: "GoTalk Studios is Sarawak's home for honest conversations with entrepreneurs, leaders, and icons. Watch on YouTube.",
+  },
+};
 import {
   FadeUp,
   FadeIn,

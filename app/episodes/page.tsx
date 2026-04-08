@@ -8,8 +8,18 @@ import { extractYouTubeId } from "@/lib/youtube";
 import { FadeIn, FadeUp, DrawLine } from "@/components/motion";
 
 export const metadata: Metadata = {
-  title: "Episodes — GoTalk Studios",
-  description: "Every episode is a window into the people, ideas, and stories that make Sarawak who she is.",
+  title:       "The Conversations | GoTalk Studios",
+  description: "Browse all GoTalk Studios episodes — from Sarawak's boldest entrepreneurs to its most powerful public figures.",
+  openGraph: {
+    title:       "The Conversations | GoTalk Studios",
+    description: "Browse all GoTalk Studios episodes — from Sarawak's boldest entrepreneurs to its most powerful public figures.",
+    url:         "https://gotalkstudios.com/episodes",
+    type:        "website",
+  },
+  twitter: {
+    title:       "The Conversations | GoTalk Studios",
+    description: "Browse all GoTalk Studios episodes — from Sarawak's boldest entrepreneurs to its most powerful public figures.",
+  },
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
