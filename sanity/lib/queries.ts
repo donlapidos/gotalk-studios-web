@@ -1,7 +1,7 @@
 import { defineQuery } from 'next-sanity'
 
 export const FEATURED_EPISODE_QUERY = defineQuery(`
-  *[_type == "episode" && featured == true][0] {
+  *[_type == "episode" && featured == true] | order(episodeNumber desc) [0] {
     _id,
     title,
     episodeNumber,
