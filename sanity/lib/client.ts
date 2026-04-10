@@ -6,5 +6,5 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  useCdn: false, // Disabled — CDN was serving stale data; pages use dynamic SSR so CDN cache offers no benefit
 })
