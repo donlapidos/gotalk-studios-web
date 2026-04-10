@@ -79,7 +79,7 @@ export const episode = defineType({
       name: 'featured',
       title: 'Featured (Hero Episode)',
       type: 'boolean',
-      description: 'Only one episode should be featured at a time.',
+      description: 'Toggle on to feature this episode on the homepage. Only one episode should be featured at a time — the most recently published featured episode will always take priority.',
       initialValue: false,
     }),
   ],
