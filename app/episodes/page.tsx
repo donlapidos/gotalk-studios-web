@@ -7,6 +7,8 @@ import { ALL_EPISODES_QUERY } from "@/sanity/lib/queries";
 import { extractYouTubeId } from "@/lib/youtube";
 import { FadeIn, FadeUp, DrawLine } from "@/components/motion";
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title:       "The Conversations | GoTalk Studios",
   description: "Browse all GoTalk Studios episodes — from Sarawak's boldest entrepreneurs to its most powerful public figures.",
