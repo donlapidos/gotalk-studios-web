@@ -202,6 +202,8 @@ export default async function GuestBioPage({ params }: Props) {
 
   if (!guest) notFound()
 
+  console.log('[guest bio] domainFocus:', guest.domainFocus)
+
   const [firstName, lastName] = splitName(guest.name)
 
   // Photo
@@ -417,18 +419,17 @@ export default async function GuestBioPage({ params }: Props) {
                 {/* Domain Focus */}
                 {guest.domainFocus && guest.domainFocus.length > 0 && (
                   <div className="mt-10">
-                    <FadeIn delay={0.1}>
-                      <p className="text-[#CC0000] text-[10px] font-bold tracking-[0.35em] uppercase mb-4">
-                        Domain Focus
-                      </p>
-                    </FadeIn>
+                    <p className="text-[#CC0000] text-[10px] font-bold tracking-[0.35em] uppercase mb-4">
+                      Domain Focus
+                    </p>
                     <div className="flex flex-wrap gap-2">
-                      {guest.domainFocus.map((tag, i) => (
-                        <ScaleIn key={tag} delay={0.1 + i * 0.06}>
-                          <span className="px-3 py-1.5 border border-[#333] text-[#CC0000] text-[11px] font-bold tracking-[0.12em] uppercase">
-                            {tag}
-                          </span>
-                        </ScaleIn>
+                      {guest.domainFocus.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1.5 border border-[#333] text-[#CC0000] text-[11px] font-bold tracking-[0.12em] uppercase"
+                        >
+                          {tag}
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -443,7 +444,7 @@ export default async function GuestBioPage({ params }: Props) {
                   </p>
                 </FadeIn>
 
-                <StaggerList className="flex flex-row lg:flex-col gap-3">
+                <StaggerList className="flex flex-row gap-3 items-center">
                   {/* Share */}
                   <StaggerItem>
                     <GuestShareButton url={pageUrl} name={guest.name} />
