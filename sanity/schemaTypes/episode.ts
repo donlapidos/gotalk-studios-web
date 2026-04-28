@@ -71,6 +71,13 @@ export const episode = defineType({
       rows: 4,
     }),
     defineField({
+      name: 'shortDescription',
+      title: 'Short Description',
+      type: 'text',
+      description:
+        "A curated summary for display on the guest bio page. Write or paste a selection from the episode description — keep it focused on the guest's story.",
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Published At',
       type: 'date',

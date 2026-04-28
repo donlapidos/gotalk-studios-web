@@ -15,5 +15,13 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.documentTypeListItem('episode').title('Episodes'),
       S.divider(),
+      S.listItem()
+        .title('Guests')
+        .child(
+          S.documentTypeList('guest')
+            .title('Guests')
+            .defaultOrdering([{ field: 'name', direction: 'asc' }])
+        ),
+      S.divider(),
       S.documentTypeListItem('blogPost').title('Blog Posts'),
     ])

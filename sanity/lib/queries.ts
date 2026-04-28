@@ -67,3 +67,76 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     heroTagline
   }
 `)
+
+export const ALL_GUESTS_QUERY = defineQuery(`
+  *[_type == "guest"] | order(segment asc, name asc) {
+    _id,
+    name,
+    slug,
+    photo,
+    title,
+    company,
+    quote,
+    segment,
+    domainFocus,
+    socialLinks,
+    featured,
+    episode-> {
+      _id,
+      title,
+      episodeNumber,
+      youtubeUrl,
+      description,
+      season
+    }
+  }
+`)
+
+export const GUEST_BY_SLUG_QUERY = defineQuery(`
+  *[_type == "guest" && slug.current == $slug][0] {
+    _id,
+    name,
+    slug,
+    photo,
+    title,
+    company,
+    bio,
+    quote,
+    segment,
+    domainFocus,
+    socialLinks,
+    featured,
+    episode-> {
+      _id,
+      title,
+      episodeNumber,
+      youtubeUrl,
+      shortDescription,
+      season
+    }
+  }
+`)
+
+export const FEATURED_GUEST_QUERY = defineQuery(`
+  *[_type == "guest" && featured == true][0] {
+    _id,
+    name,
+    slug,
+    photo,
+    title,
+    company,
+    bio,
+    quote,
+    segment,
+    domainFocus,
+    socialLinks,
+    episode-> {
+      _id,
+      title,
+      episodeNumber,
+      youtubeUrl,
+      description,
+      season
+    }
+  }
+`)

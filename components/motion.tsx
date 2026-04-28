@@ -168,4 +168,45 @@ export function ScaleIn({ children, delay = 0, className = "" }: Props) {
   );
 }
 
+// ─── SlideInLeft — opacity + x offset ────────────────────────────────────────
+export function SlideInLeft({ children, delay = 0, className = "" }: Props) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: MARGIN });
+  return (
+    <motion.div
+      ref={ref}
+      initial={reduced ? false : { opacity: 0, x: -20 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ─── DrawLineY — animates height from 0 (vertical line reveal) ───────────────
+export function DrawLineY({
+  delay = 0,
+  className = "",
+}: {
+  delay?: number;
+  className?: string;
+}) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: MARGIN });
+  return (
+    <motion.span
+      ref={ref}
+      initial={reduced ? false : { scaleY: 0, transformOrigin: "top" }}
+      animate={inView ? { scaleY: 1 } : {}}
+      transition={{ duration: 0.6, delay, ease }}
+      className={className}
+      style={{ display: "block" }}
+    />
+  );
+}
+
 export { motion };
