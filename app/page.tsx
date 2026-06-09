@@ -242,7 +242,6 @@ function ShowSegments() {
       tagline:
         "The entrepreneurs, founders, and risk-takers building Sarawak's future.",
       href: "/episodes?category=business",
-      comingSoon: false,
       img: "/segment-business.png",
     },
     {
@@ -251,7 +250,6 @@ function ShowSegments() {
       tagline:
         "The decision-makers and public servants, in their own words.",
       href: "/episodes?category=politics",
-      comingSoon: false,
       img: "/segment-politics.png",
     },
     {
@@ -260,7 +258,6 @@ function ShowSegments() {
       tagline:
         "Sarawak's celebrated voices — artists, athletes, and cultural figures.",
       href: "/episodes?category=icons",
-      comingSoon: true,
       img: "/segment-icons.png",
     },
   ];
@@ -285,7 +282,7 @@ function ShowSegments() {
         <StaggerList className="grid md:grid-cols-3 gap-4">
           {segments.map((seg) => (
             <StaggerItem key={seg.name}>
-              <div className="group relative overflow-hidden bg-[#111111] hover:bg-[#181818] transition-colors border border-white/8 hover:border-[#CC0000]/30 h-full">
+              <Link href={seg.href} className="group relative overflow-hidden bg-[#111111] hover:bg-[#181818] transition-colors border border-white/8 hover:border-[#CC0000]/30 h-full block">
                 {/* Background image */}
                 <div className="relative h-48 overflow-hidden">
                   <Image
@@ -303,13 +300,7 @@ function ShowSegments() {
                 </div>
 
                 <div className="p-7">
-                  {seg.comingSoon ? (
-                    <span className="inline-block text-[10px] font-bold tracking-widest uppercase border border-white/15 text-white/30 px-2.5 py-1 mb-4">
-                      Coming Soon
-                    </span>
-                  ) : (
-                    <span className="inline-block w-2.5 h-2.5 bg-[#CC0000] mb-4" />
-                  )}
+                  <span className="inline-block w-2.5 h-2.5 bg-[#CC0000] mb-4" />
 
                   <h3 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-widest mb-3 leading-tight">
                     {seg.name}
@@ -318,20 +309,11 @@ function ShowSegments() {
                     {seg.tagline}
                   </p>
 
-                  {!seg.comingSoon ? (
-                    <Link
-                      href={seg.href}
-                      className="text-xs font-bold tracking-[0.2em] uppercase text-[#CC0000] hover:text-white transition-colors group-hover:underline"
-                    >
-                      VIEW EPISODES →
-                    </Link>
-                  ) : (
-                    <span className="text-xs font-bold tracking-[0.2em] uppercase text-white/15">
-                      WATCH THIS SPACE
-                    </span>
-                  )}
+                  <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#CC0000] hover:text-white transition-colors group-hover:underline">
+                    VIEW EPISODES →
+                  </span>
                 </div>
-              </div>
+              </Link>
             </StaggerItem>
           ))}
         </StaggerList>
