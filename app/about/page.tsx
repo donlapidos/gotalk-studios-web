@@ -108,14 +108,14 @@ function Hosts() {
   const hosts = [
     {
       name: "Lionel Lapidos",
-      role: "Host",
-      bio: "Lionel Lapidos is a host at GoTalk Studios. Known for his sharp questions and disarming warmth, Lionel has a rare ability to make guests feel at ease while drawing out the stories they've never told in public. His passion for Sarawak and its people is the heartbeat behind every GoTalk episode.",
+      role: "Co-Founder & Host",
+      bio: "Lionel Lapidos is a co-founder and host of GoTalk Studios. Known for his sharp questions and disarming warmth, Lionel has a rare ability to make guests feel at ease while drawing out the stories they've never told in public. His passion for Sarawak and its people is the heartbeat behind every GoTalk episode.",
       photo: "/lionel.png",
     },
     {
       name: "Gordon Surein Raj",
-      role: "Founder & Host",
-      bio: "Gordon Surein Raj is the founder and host of GoTalk Studios. His natural curiosity and instinct for storytelling make every conversation feel like the most important one you've ever heard. Gordon believes that Sarawak's greatest untapped resource is the stories sitting inside its people — and he's on a mission to bring them to light.",
+      role: "Co-Founder & Host",
+      bio: "Gordon Surein Raj is a co-founder and host of GoTalk Studios. His natural curiosity and instinct for storytelling make every conversation feel like the most important one you've ever heard. Gordon believes that Sarawak's greatest untapped resource is the stories sitting inside its people — and he's on a mission to bring them to light.",
       photo: "/gordon.jpg",
     },
   ];
