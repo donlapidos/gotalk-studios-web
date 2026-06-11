@@ -117,6 +117,13 @@ export const GUEST_BY_SLUG_QUERY = defineQuery(`
   }
 `)
 
+export const GUEST_SLUGS_QUERY = defineQuery(`
+  *[_type == "guest" && defined(slug.current)] {
+    "slug": slug.current,
+    _updatedAt
+  }
+`)
+
 export const FEATURED_GUEST_QUERY = defineQuery(`
   *[_type == "guest" && featured == true][0] {
     _id,

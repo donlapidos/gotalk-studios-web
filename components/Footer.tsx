@@ -48,7 +48,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-white/30">
-            © 2026 GoTalk Studios. All Rights Reserved.
+            © {new Date().getFullYear()} GoTalk Studios. All Rights Reserved.
           </p>
           <div className="flex gap-6">
             {[

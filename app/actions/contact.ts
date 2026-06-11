@@ -8,11 +8,30 @@ const FROM = 'GoTalk Studios <no-reply@gotalkstudios.com>'
 
 type Result = { success: boolean; error?: string }
 
+// Tolerates missing fields (bots POSTing without the form) instead of throwing
+function field(formData: FormData, key: string): string {
+  const v = formData.get(key)
+  return typeof v === 'string' ? v.trim() : ''
+}
+
+// Subject lines must stay single-line
+function oneLine(s: string): string {
+  return s.replace(/[\r\n]+/g, ' ')
+}
+
+// Hidden honeypot field — humans never fill it; bots do. Pretend success so
+// bots don't learn they were filtered.
+function isSpam(formData: FormData): boolean {
+  return field(formData, 'website_url') !== ''
+}
+
 export async function submitGuestInquiry(_: Result | null, formData: FormData): Promise<Result> {
-  const name   = (formData.get('name')   as string).trim()
-  const email  = (formData.get('email')  as string).trim()
-  const social = (formData.get('social') as string | null)?.trim() ?? ''
-  const pitch  = (formData.get('pitch')  as string).trim()
+  if (isSpam(formData)) return { success: true }
+
+  const name   = field(formData, 'name')
+  const email  = field(formData, 'email')
+  const social = field(formData, 'social')
+  const pitch  = field(formData, 'pitch')
 
   if (!name || !email || !pitch) {
     return { success: false, error: 'Please fill in all required fields.' }
@@ -23,7 +42,7 @@ export async function submitGuestInquiry(_: Result | null, formData: FormData): 
       from: FROM,
       to: TO,
       replyTo: email,
-      subject: `Guest Inquiry — ${name}`,
+      subject: `Guest Inquiry — ${oneLine(name)}`,
       text: [
         `Name:              ${name}`,
         `Email:             ${email}`,
@@ -41,11 +60,13 @@ export async function submitGuestInquiry(_: Result | null, formData: FormData): 
 }
 
 export async function submitSponsorshipInquiry(_: Result | null, formData: FormData): Promise<Result> {
-  const company = (formData.get('company') as string).trim()
-  const contact = (formData.get('contact') as string).trim()
-  const email   = (formData.get('email')   as string).trim()
-  const budget  = (formData.get('budget')  as string | null)?.trim() ?? ''
-  const goals   = (formData.get('goals')   as string | null)?.trim() ?? ''
+  if (isSpam(formData)) return { success: true }
+
+  const company = field(formData, 'company')
+  const contact = field(formData, 'contact')
+  const email   = field(formData, 'email')
+  const budget  = field(formData, 'budget')
+  const goals   = field(formData, 'goals')
 
   if (!company || !contact || !email) {
     return { success: false, error: 'Please fill in all required fields.' }
@@ -56,7 +77,7 @@ export async function submitSponsorshipInquiry(_: Result | null, formData: FormD
       from: FROM,
       to: TO,
       replyTo: email,
-      subject: `Sponsorship Inquiry — ${company}`,
+      subject: `Sponsorship Inquiry — ${oneLine(company)}`,
       text: [
         `Company:   ${company}`,
         `Contact:   ${contact}`,

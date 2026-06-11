@@ -10,7 +10,7 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { GUEST_BY_SLUG_QUERY } from '@/sanity/lib/queries'
 import { urlFor } from '@/sanity/lib/image'
 import { extractYouTubeId } from '@/lib/youtube'
-import { FadeIn, FadeUp, SlideInLeft, DrawLineY, ScaleIn, StaggerList, StaggerItem } from '@/components/motion'
+import { FadeIn, FadeUp, SlideInLeft, DrawLineY, StaggerList, StaggerItem } from '@/components/motion'
 import GuestShareButton from '@/components/GuestShareButton'
 
 export const dynamic = 'force-dynamic'
@@ -201,8 +201,6 @@ export default async function GuestBioPage({ params }: Props) {
   const guest = await getGuest(slug)
 
   if (!guest) notFound()
-
-  console.log('[guest bio] domainFocus:', guest.domainFocus)
 
   const [firstName, lastName] = splitName(guest.name)
 

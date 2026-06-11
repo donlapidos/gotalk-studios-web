@@ -93,6 +93,19 @@ function SelectField({
   );
 }
 
+// Invisible to humans (and skipped by screen readers); bots auto-fill it and
+// get silently dropped server-side.
+function HoneypotField() {
+  return (
+    <div aria-hidden="true" className="absolute -left-[9999px] top-0 h-px w-px overflow-hidden">
+      <label>
+        Website URL
+        <input name="website_url" type="text" tabIndex={-1} autoComplete="off" />
+      </label>
+    </div>
+  );
+}
+
 // ─── Guest Form ───────────────────────────────────────────────────────────────
 
 export function GuestInquiryForm() {
@@ -125,7 +138,8 @@ export function GuestInquiryForm() {
         Pitch your appearance on GoTalk. We read every submission.
       </p>
 
-      <form action={action} className="space-y-5">
+      <form action={action} className="relative space-y-5">
+        <HoneypotField />
         <div className="grid sm:grid-cols-2 gap-5">
           <Field name="name"  label="Full Name"      placeholder="Your full name"      required />
           <Field name="email" label="Email Address"  placeholder="you@example.com"     required type="email" />
@@ -193,7 +207,8 @@ export function SponsorshipForm() {
         land.
       </p>
 
-      <form action={action} className="space-y-5">
+      <form action={action} className="relative space-y-5">
+        <HoneypotField />
         <div className="grid sm:grid-cols-2 gap-5">
           <Field name="company" label="Company / Brand Name" placeholder="Your company name" required />
           <Field name="contact" label="Contact Person"       placeholder="Your name"         required />
