@@ -40,6 +40,7 @@ export const service = defineType({
       title: 'Features',
       type: 'array',
       of: [{ type: 'string' }],
+      options: { layout: 'tags' },
       description: 'Bullet points of what is included',
     }),
     defineField({
@@ -93,7 +94,7 @@ export const service = defineType({
       subtitle: 'serviceNumber',
     },
     prepare({ title, subtitle }) {
-      return { title: `${subtitle} — ${title}` }
+      return { title: subtitle ? `${subtitle} — ${title}` : (title ?? 'Untitled') }
     },
   },
   orderings: [
