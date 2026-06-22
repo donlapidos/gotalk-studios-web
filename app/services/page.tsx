@@ -40,7 +40,7 @@ type Service = {
   tagline: string | null
   features: string[] | null
   perfectFor: string | null
-  featured: boolean
+  featured: boolean | null
   pricingRows: PricingRow[] | null
   pricingNote: string | null
 }

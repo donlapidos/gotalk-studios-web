@@ -30,12 +30,6 @@ export const service = defineType({
       description: "Short hook line, e.g. 'Launch Your Podcast the Right Way!'",
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      rows: 3,
-    }),
-    defineField({
       name: 'features',
       title: 'Features',
       type: 'array',
