@@ -10,6 +10,7 @@ export const service = defineType({
       title: 'Order Rank',
       type: 'number',
       description: 'Manual sort order (lower = first)',
+      validation: (R) => R.required().integer().positive(),
     }),
     defineField({
       name: 'serviceNumber',
@@ -59,8 +60,8 @@ export const service = defineType({
         {
           type: 'object',
           fields: [
-            defineField({ name: 'duration', title: 'Duration / Package', type: 'string' }),
-            defineField({ name: 'price', title: 'Price', type: 'string', description: "e.g. 'RM180 – RM250'" }),
+            defineField({ name: 'duration', title: 'Duration / Package', type: 'string', validation: (R) => R.required() }),
+            defineField({ name: 'price', title: 'Price', type: 'string', description: "e.g. 'RM180 – RM250'", validation: (R) => R.required() }),
           ],
           preview: {
             select: { title: 'duration', subtitle: 'price' },
