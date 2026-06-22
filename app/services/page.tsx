@@ -12,6 +12,18 @@ export const metadata: Metadata = {
   title: 'Services | GoTalk Studios',
   description:
     'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+  openGraph: {
+    title: 'Services | GoTalk Studios',
+    description:
+      'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+    url: 'https://gotalkstudios.com/services',
+    type: 'website',
+  },
+  twitter: {
+    title: 'Services | GoTalk Studios',
+    description:
+      'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+  },
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -26,7 +38,6 @@ type Service = {
   serviceNumber: string | null
   name: string
   tagline: string | null
-  description: string | null
   features: string[] | null
   perfectFor: string | null
   featured: boolean
@@ -125,7 +136,7 @@ function FeaturedCard({
           <ul className="space-y-2 mb-5">
             {service.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-3">
-                <span className="w-3 h-3 bg-[#CC0000] shrink-0" />
+                <span className="w-3 h-3 bg-[#CC0000] shrink-0" aria-hidden="true" />
                 <span className="text-white/70 text-xs font-semibold tracking-[0.12em] uppercase">
                   {feature}
                 </span>
@@ -224,7 +235,7 @@ function CompactCard({ service }: { service: Service }) {
         <ul className="space-y-1.5 mb-4">
           {service.features.map((feature, i) => (
             <li key={i} className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#CC0000] shrink-0" />
+              <span className="w-2 h-2 bg-[#CC0000] shrink-0" aria-hidden="true" />
               <span className="text-white/70 text-[11px] font-semibold tracking-[0.1em] uppercase">
                 {feature}
               </span>

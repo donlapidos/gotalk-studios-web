@@ -154,7 +154,6 @@ export const ALL_SERVICES_QUERY = defineQuery(`
     serviceNumber,
     name,
     tagline,
-    description,
     features,
     perfectFor,
     featured,
