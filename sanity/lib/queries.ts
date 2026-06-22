@@ -147,3 +147,18 @@ export const FEATURED_GUEST_QUERY = defineQuery(`
     }
   }
 `)
+
+export const ALL_SERVICES_QUERY = defineQuery(`
+  *[_type == "service" && active == true] | order(orderRank asc) {
+    _id,
+    serviceNumber,
+    name,
+    tagline,
+    description,
+    features,
+    perfectFor,
+    featured,
+    pricingRows,
+    pricingNote
+  }
+`)
