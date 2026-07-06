@@ -4,8 +4,6 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { ALL_SERVICES_QUERY } from '@/sanity/lib/queries'
 import { FadeIn, FadeUp, DrawLine } from '@/components/motion'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: 'Services | GoTalk Studios',
   description:

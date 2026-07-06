@@ -5,8 +5,6 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { ALL_GUESTS_QUERY } from '@/sanity/lib/queries'
 import { FadeUp, FadeIn, DrawLine } from '@/components/motion'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: 'Guests | GoTalk Studios',
   description:

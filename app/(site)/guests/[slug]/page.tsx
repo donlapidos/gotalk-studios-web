@@ -12,8 +12,6 @@ import { extractYouTubeId } from '@/lib/youtube'
 import { FadeIn, FadeUp, SlideInLeft, DrawLineY, StaggerList, StaggerItem } from '@/components/motion'
 import GuestShareButton from '@/components/GuestShareButton'
 
-export const dynamic = 'force-dynamic'
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type SocialLinks = {

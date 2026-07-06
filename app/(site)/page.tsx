@@ -7,8 +7,6 @@ import { FEATURED_EPISODE_QUERY } from "@/sanity/lib/queries";
 import { imageUrl, type SanityImageValue } from "@/sanity/lib/image";
 import { extractYouTubeId } from "@/lib/youtube";
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
   description: "GoTalk Studios is Sarawak's home for honest conversations with entrepreneurs, leaders, and icons. Watch on YouTube.",
