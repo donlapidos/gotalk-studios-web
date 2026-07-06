@@ -1,14 +1,13 @@
 import type { Metadata } from 'next'
 import { cache } from 'react'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 import { sanityFetch } from '@/sanity/lib/live'
 import { GUEST_BY_SLUG_QUERY } from '@/sanity/lib/queries'
-import { urlFor } from '@/sanity/lib/image'
+import { imageUrl, type SanityImageValue } from '@/sanity/lib/image'
+import SanityImage from '@/components/SanityImage'
+import { guestPtComponents } from '@/components/portable-text'
 import { extractYouTubeId } from '@/lib/youtube'
 import { FadeIn, FadeUp, SlideInLeft, DrawLineY, StaggerList, StaggerItem } from '@/components/motion'
 import GuestShareButton from '@/components/GuestShareButton'
@@ -37,7 +36,7 @@ type Guest = {
   _id: string
   name: string
   slug: { current: string }
-  photo: unknown
+  photo: SanityImageValue | null
   title: string | null
   company: string | null
   bio: unknown[]
@@ -68,13 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!guest) return { title: 'Guest Not Found' }
 
   const description = guest.quote ?? `${guest.name} on GoTalk Studios — ${guest.title ?? ''}`
-  let ogImageUrl = '/og-image.jpg'
-  if (guest.photo) {
-    try {
-      ogImageUrl = urlFor(guest.photo as Parameters<typeof urlFor>[0])
-        .width(1200).height(630).fit('crop').url()
-    } catch { /* fall back */ }
-  }
+  const ogImageUrl = imageUrl(guest.photo, 1200, 630) ?? '/og-image.jpg'
 
   return {
     title: guest.name,
@@ -92,43 +85,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [ogImageUrl],
     },
   }
-}
-
-// ─── Portable Text components ─────────────────────────────────────────────────
-
-const ptComponents = {
-  block: {
-    normal: ({ children }: { children?: React.ReactNode }) => (
-      <p className="mb-5 text-white/70 leading-relaxed text-sm">{children}</p>
-    ),
-    h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-wide mt-8 mb-3">
-        {children}
-      </h2>
-    ),
-    blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="border-l-2 border-[#CC0000] pl-5 my-6 text-white/55 italic text-sm">
-        {children}
-      </blockquote>
-    ),
-  },
-  marks: {
-    strong: ({ children }: { children?: React.ReactNode }) => (
-      <strong className="text-white font-bold">{children}</strong>
-    ),
-    em: ({ children }: { children?: React.ReactNode }) => (
-      <em className="italic">{children}</em>
-    ),
-    link: ({ value, children }: { value?: { href?: string }; children?: React.ReactNode }) => {
-      const raw = value?.href ?? ''
-      const href = /^https?:|^mailto:/.test(raw) ? raw : '#'
-      return (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#CC0000] underline hover:text-white transition-colors">
-          {children}
-        </a>
-      )
-    },
-  },
 }
 
 // ─── Social icon helpers ──────────────────────────────────────────────────────
@@ -162,18 +118,6 @@ function LinkedinIcon() {
   )
 }
 
-// ─── Hotspot helper ───────────────────────────────────────────────────────────
-
-function getHotspotPosition(photo: unknown): string {
-  if (photo && typeof photo === 'object' && 'hotspot' in photo) {
-    const h = (photo as { hotspot?: { x: number; y: number } }).hotspot
-    if (h && typeof h.x === 'number' && typeof h.y === 'number') {
-      return `${Math.round(h.x * 100)}% ${Math.round(h.y * 100)}%`
-    }
-  }
-  return 'center 15%'
-}
-
 // ─── Name split helper ────────────────────────────────────────────────────────
 
 function splitName(name: string): [string, string] {
@@ -204,18 +148,6 @@ export default async function GuestBioPage({ params }: Props) {
 
   const [firstName, lastName] = splitName(guest.name)
 
-  // Photo
-  let photoUrl: string | null = null
-  if (guest.photo) {
-    try {
-      photoUrl = urlFor(guest.photo as Parameters<typeof urlFor>[0])
-        .width(900).height(1200).fit('crop').crop('focalpoint').url()
-    } catch { /* no photo */ }
-  }
-
-  // Hotspot-based object-position for the hero photo
-  const heroObjectPosition = getHotspotPosition(guest.photo)
-
   // Episode & YouTube
   const videoId = extractYouTubeId(guest.episode?.youtubeUrl)
   const ytUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : null
@@ -228,7 +160,6 @@ export default async function GuestBioPage({ params }: Props) {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {/* ── Top back-link ──────────────────────────────────────── */}
@@ -246,14 +177,14 @@ export default async function GuestBioPage({ params }: Props) {
 
           {/* Left: Photo */}
           <SlideInLeft className="relative h-[70vw] lg:h-auto overflow-hidden bg-[#0A0A0A]">
-            {photoUrl ? (
-              <Image
-                src={photoUrl}
+            {guest.photo?.asset ? (
+              <SanityImage
+                image={guest.photo}
                 alt={guest.name}
-                fill
+                width={900}
+                height={1200}
                 priority
-                className="object-cover"
-                style={{ objectPosition: heroObjectPosition }}
+                useHotspot
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
@@ -408,7 +339,7 @@ export default async function GuestBioPage({ params }: Props) {
 
                 {guest.bio && guest.bio.length > 0 ? (
                   <FadeUp delay={0.2}>
-                    <PortableText value={guest.bio as Parameters<typeof PortableText>[0]['value']} components={ptComponents} />
+                    <PortableText value={guest.bio as Parameters<typeof PortableText>[0]['value']} components={guestPtComponents} />
                   </FadeUp>
                 ) : (
                   <p className="text-white/30 text-sm italic">No biography available.</p>
@@ -571,7 +502,6 @@ export default async function GuestBioPage({ params }: Props) {
         </div>
 
       </main>
-      <Footer />
     </>
   )
 }

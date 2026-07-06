@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SegmentShelf from "@/components/SegmentShelf";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ALL_EPISODES_QUERY } from "@/sanity/lib/queries";
@@ -137,7 +135,6 @@ export default async function EpisodesPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {featured && <FeaturedHero episode={featured} />}
@@ -164,7 +161,6 @@ export default async function EpisodesPage() {
         </div>
 
       </main>
-      <Footer />
     </>
   )
 }

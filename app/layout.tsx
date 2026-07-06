@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
-import { SanityLive } from "@/sanity/lib/live";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
@@ -54,7 +53,6 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#111111] text-white">
         {children}
-        <SanityLive />
         <Analytics />
         {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>

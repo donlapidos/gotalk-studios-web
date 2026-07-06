@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
-import Image from "next/image";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ALL_POSTS_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
+import type { SanityImageValue } from "@/sanity/lib/image";
+import { categoryColors, fallbackCategoryColor } from "@/lib/blog";
 import {
   FadeUp,
   FadeIn,
@@ -39,38 +38,15 @@ type Post = {
   slug: { current: string } | null
   category: string
   excerpt: string | null
-  featuredImage: unknown
+  featuredImage: SanityImageValue | null
   author: string | null
   publishedAt: string | null
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const categoryColors: Record<string, string> = {
-  Business:     "text-[#CC0000] border-[#CC0000]/40",
-  "Studio News": "text-blue-400 border-blue-400/40",
-  Culture:      "text-amber-400 border-amber-400/40",
-  Leadership:   "text-emerald-400 border-emerald-400/40",
-};
-
-function postImageUrl(image: unknown, width: number, height: number): string | null {
-  if (!image) return null;
-  try {
-    return urlFor(image as Parameters<typeof urlFor>[0])
-      .width(width)
-      .height(height)
-      .fit('crop')
-      .url();
-  } catch {
-    return null;
-  }
 }
 
 // ─── Featured Post ────────────────────────────────────────────────────────────
 
 function FeaturedPost({ post }: { post: Post }) {
-  const colorClass = categoryColors[post.category] ?? "text-white/60 border-white/20";
-  const imgUrl = postImageUrl(post.featuredImage, 800, 500);
+  const colorClass = categoryColors[post.category] ?? fallbackCategoryColor;
   const href = post.slug ? `/blog/${post.slug.current}` : '#';
 
   return (
@@ -81,12 +57,13 @@ function FeaturedPost({ post }: { post: Post }) {
       >
         {/* Thumbnail */}
         <div className="relative aspect-video lg:aspect-auto min-h-[260px] overflow-hidden bg-[#1A1A1A]">
-          {imgUrl ? (
-            <Image
-              src={imgUrl}
+          {post.featuredImage?.asset ? (
+            <SanityImage
+              image={post.featuredImage}
               alt={post.title}
-              fill
-              className="object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700"
+              width={800}
+              height={500}
+              className="opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           ) : (
@@ -126,8 +103,7 @@ function FeaturedPost({ post }: { post: Post }) {
 // ─── Post Card ────────────────────────────────────────────────────────────────
 
 function PostCard({ post }: { post: Post }) {
-  const colorClass = categoryColors[post.category] ?? "text-white/60 border-white/20";
-  const imgUrl = postImageUrl(post.featuredImage, 640, 360);
+  const colorClass = categoryColors[post.category] ?? fallbackCategoryColor;
   const href = post.slug ? `/blog/${post.slug.current}` : '#';
 
   return (
@@ -137,12 +113,13 @@ function PostCard({ post }: { post: Post }) {
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-[#1A1A1A]">
-        {imgUrl ? (
-          <Image
-            src={imgUrl}
+        {post.featuredImage?.asset ? (
+          <SanityImage
+            image={post.featuredImage}
             alt={post.title}
-            fill
-            className="object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
+            width={640}
+            height={360}
+            className="opacity-75 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
             sizes="(max-width: 640px) 100vw, 33vw"
           />
         ) : (
@@ -186,7 +163,6 @@ export default async function BlogPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16">
         <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden noise">
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
@@ -239,7 +215,6 @@ export default async function BlogPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

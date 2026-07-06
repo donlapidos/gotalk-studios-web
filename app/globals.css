@@ -52,16 +52,3 @@ body {
 ::-webkit-scrollbar-track { background: #111; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #CC0000; }
-
-/* Bounce animation for scroll indicator */
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-.animate-bounce-slow { animation: bounce-slow 2s ease-in-out infinite; }
-
-/* Red line draw animation */
-@keyframes draw-line {
-  from { transform: scaleX(0); transform-origin: left; }
-  to { transform: scaleX(1); transform-origin: left; }
-}

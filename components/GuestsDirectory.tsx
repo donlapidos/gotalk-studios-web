@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence, type Variants } from 'framer-motion'
-import { urlFor } from '@/sanity/lib/image'
+import SanityImage from '@/components/SanityImage'
+import type { SanityImageValue } from '@/sanity/lib/image'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,7 +26,7 @@ export type GuestItem = {
   _id: string
   name: string
   slug: { current: string }
-  photo: unknown
+  photo: SanityImageValue | null
   title: string | null
   company: string | null
   segment: string | null
@@ -56,35 +56,9 @@ const overlayVariants: Variants = {
   hover: { opacity: 1 },
 }
 
-// ─── Hotspot helper ───────────────────────────────────────────────────────────
-
-function getObjectPosition(photo: unknown): string {
-  if (photo && typeof photo === 'object' && 'hotspot' in photo) {
-    const h = (photo as { hotspot?: { x: number; y: number } }).hotspot
-    if (h && typeof h.x === 'number' && typeof h.y === 'number') {
-      return `${Math.round(h.x * 100)}% ${Math.round(h.y * 100)}%`
-    }
-  }
-  return 'center 15%'
-}
-
 // ─── Guest Card ───────────────────────────────────────────────────────────────
 
 function GuestCard({ guest }: { guest: GuestItem }) {
-  let photoUrl: string | null = null
-  if (guest.photo) {
-    try {
-      photoUrl = urlFor(guest.photo as Parameters<typeof urlFor>[0])
-        .width(480)
-        .height(640)
-        .fit('crop')
-        .crop('focalpoint')
-        .url()
-    } catch { /* no photo */ }
-  }
-
-  const objectPosition = getObjectPosition(guest.photo)
-
   return (
     <motion.div
       initial="rest"
@@ -98,18 +72,18 @@ function GuestCard({ guest }: { guest: GuestItem }) {
 
         {/* Photo — 3:4 portrait */}
         <div className="relative overflow-hidden bg-[#1a1a1a]" style={{ aspectRatio: '3 / 4' }}>
-          {photoUrl ? (
+          {guest.photo?.asset ? (
             <motion.div
               variants={photoVariants}
               transition={{ duration: 0.4, ease: 'easeOut' }}
               className="absolute inset-0"
             >
-              <Image
-                src={photoUrl}
+              <SanityImage
+                image={guest.photo}
                 alt={guest.name}
-                fill
-                className="object-cover"
-                style={{ objectPosition }}
+                width={480}
+                height={640}
+                useHotspot
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               />
             </motion.div>
@@ -214,9 +188,11 @@ export default function GuestsDirectory({ guests }: { guests: GuestItem[] }) {
       </div>
 
       {/* Grid */}
+      {/* Keyed on the tab only — re-keying on `search` re-ran the entire
+          grid enter animation on every keystroke */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${activeTab}::${search}`}
+          key={activeTab}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}

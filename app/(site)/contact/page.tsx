@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { GuestInquiryForm, SponsorshipForm, StudioInfo } from "@/components/ContactForms";
 
 export const metadata: Metadata = {
@@ -21,7 +19,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <Navbar />
       <main className="pt-16">
         {/* Page Header */}
         <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden">
@@ -58,7 +55,6 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

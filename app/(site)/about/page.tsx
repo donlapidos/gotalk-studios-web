@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -212,7 +210,6 @@ function AboutCTA() {
 export default function AboutPage() {
   return (
     <>
-      <Navbar />
       <main className="pt-16">
         <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden noise">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0D] to-[#111111]" />
@@ -237,7 +234,6 @@ export default function AboutPage() {
         <Hosts />
         <AboutCTA />
       </main>
-      <Footer />
     </>
   );
 }

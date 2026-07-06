@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { sanityFetch } from "@/sanity/lib/live";
 import { FEATURED_EPISODE_QUERY } from "@/sanity/lib/queries";
+import { imageUrl, type SanityImageValue } from "@/sanity/lib/image";
 import { extractYouTubeId } from "@/lib/youtube";
 
 export const dynamic = 'force-dynamic'
@@ -156,6 +155,7 @@ type FeaturedEp = {
   guestName: string
   guestCompany: string | null
   youtubeUrl: string | null
+  thumbnail: SanityImageValue | null
   description: string | null
 } | null
 
@@ -165,6 +165,8 @@ function FeaturedEpisode({ episode }: { episode: FeaturedEp }) {
   const videoId = extractYouTubeId(episode.youtubeUrl);
   const ytUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : null;
   const guest = [episode.guestName, episode.guestCompany].filter(Boolean).join(' — ');
+  // Editor-uploaded override; falls back to the YouTube auto-thumbnail
+  const customThumb = imageUrl(episode.thumbnail, 1280, 720) ?? undefined;
 
   return (
     <section className="py-24 bg-[#111111]">
@@ -184,6 +186,7 @@ function FeaturedEpisode({ episode }: { episode: FeaturedEp }) {
             <YouTubeEmbed
               videoId={videoId}
               title={episode.title}
+              thumbnail={customThumb}
               badge={`EP ${episode.episodeNumber}`}
             />
           </ScaleIn>
@@ -384,7 +387,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar />
       <main>
         <HeroSection />
         <StatsBar />
@@ -392,7 +394,6 @@ export default async function HomePage() {
         <ShowSegments />
         <FooterCTA />
       </main>
-      <Footer />
     </>
   );
 }

@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 import { sanityFetch } from '@/sanity/lib/live'
 import { ALL_SERVICES_QUERY } from '@/sanity/lib/queries'
 import { FadeIn, FadeUp, DrawLine } from '@/components/motion'
@@ -255,7 +253,6 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {/* ── Hero ─────────────────────────────────────────────── */}
@@ -363,7 +360,6 @@ export default async function ServicesPage() {
         </section>
 
       </main>
-      <Footer />
     </>
   )
 }

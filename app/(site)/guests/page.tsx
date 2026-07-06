@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 import GuestsDirectory, { type GuestItem } from '@/components/GuestsDirectory'
 import { sanityFetch } from '@/sanity/lib/live'
 import { ALL_GUESTS_QUERY } from '@/sanity/lib/queries'
@@ -33,7 +31,6 @@ export default async function GuestsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {/* ── Page Header ─────────────────────────────────────── */}
@@ -102,7 +99,6 @@ export default async function GuestsPage() {
         </section>
 
       </main>
-      <Footer />
     </>
   )
 }

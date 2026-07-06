@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title:       "Privacy Policy | GoTalk Studios",
@@ -105,7 +103,6 @@ By using our website, you consent to the practices described in this Privacy Pol
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {/* Page Header */}
@@ -167,7 +164,6 @@ export default function PrivacyPolicyPage() {
         </div>
 
       </main>
-      <Footer />
     </>
   );
 }

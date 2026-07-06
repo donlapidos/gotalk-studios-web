@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title:       "Terms of Service | GoTalk Studios",
@@ -110,7 +108,6 @@ The views and opinions expressed by guests on GoTalk Studios are those of the gu
 export default function TermsOfServicePage() {
   return (
     <>
-      <Navbar />
       <main className="pt-16 bg-[#111111] min-h-screen">
 
         {/* Page Header */}
@@ -169,7 +166,6 @@ export default function TermsOfServicePage() {
         </div>
 
       </main>
-      <Footer />
     </>
   );
 }

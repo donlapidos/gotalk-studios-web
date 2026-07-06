@@ -10,7 +10,7 @@ export const FEATURED_EPISODE_QUERY = defineQuery(`
     guestName,
     guestCompany,
     youtubeUrl,
-    thumbnail,
+    thumbnail{ ..., "lqip": asset->metadata.lqip },
     description,
     publishedAt
   }
@@ -26,7 +26,6 @@ export const ALL_EPISODES_QUERY = defineQuery(`
     guestName,
     guestCompany,
     youtubeUrl,
-    thumbnail,
     description,
     publishedAt,
     featured
@@ -40,7 +39,7 @@ export const ALL_POSTS_QUERY = defineQuery(`
     slug,
     category,
     excerpt,
-    featuredImage,
+    featuredImage{ ..., "lqip": asset->metadata.lqip },
     author,
     publishedAt
   }
@@ -53,18 +52,10 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
     slug,
     category,
     excerpt,
-    featuredImage,
+    featuredImage{ ..., "lqip": asset->metadata.lqip },
     body,
     author,
     publishedAt
-  }
-`)
-
-export const SITE_SETTINGS_QUERY = defineQuery(`
-  *[_type == "siteSettings"][0] {
-    contactEmail,
-    instagramHandle,
-    heroTagline
   }
 `)
 
@@ -73,7 +64,7 @@ export const ALL_GUESTS_QUERY = defineQuery(`
     _id,
     name,
     slug,
-    photo,
+    photo{ ..., "lqip": asset->metadata.lqip },
     title,
     company,
     quote,
@@ -97,7 +88,7 @@ export const GUEST_BY_SLUG_QUERY = defineQuery(`
     _id,
     name,
     slug,
-    photo,
+    photo{ ..., "lqip": asset->metadata.lqip },
     title,
     company,
     bio,
@@ -121,30 +112,6 @@ export const GUEST_SLUGS_QUERY = defineQuery(`
   *[_type == "guest" && defined(slug.current)] {
     "slug": slug.current,
     _updatedAt
-  }
-`)
-
-export const FEATURED_GUEST_QUERY = defineQuery(`
-  *[_type == "guest" && featured == true][0] {
-    _id,
-    name,
-    slug,
-    photo,
-    title,
-    company,
-    bio,
-    quote,
-    segment,
-    domainFocus,
-    socialLinks,
-    episode-> {
-      _id,
-      title,
-      episodeNumber,
-      youtubeUrl,
-      description,
-      season
-    }
   }
 `)
 

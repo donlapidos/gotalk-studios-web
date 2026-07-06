@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,6 +16,9 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 30);
@@ -56,10 +60,17 @@ export default function Navbar() {
             <Link
               key={label}
               href={href}
-              className="relative text-xs font-semibold tracking-[0.2em] text-white/60 hover:text-white transition-colors uppercase group"
+              aria-current={isActive(href) ? "page" : undefined}
+              className={`relative text-xs font-semibold tracking-[0.2em] hover:text-white transition-colors uppercase group ${
+                isActive(href) ? "text-white" : "text-white/60"
+              }`}
             >
               {label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#CC0000] group-hover:w-full transition-all duration-300" />
+              <span
+                className={`absolute -bottom-0.5 left-0 h-px bg-[#CC0000] group-hover:w-full transition-all duration-300 ${
+                  isActive(href) ? "w-full" : "w-0"
+                }`}
+              />
             </Link>
           ))}
         </motion.nav>
@@ -108,7 +119,10 @@ export default function Navbar() {
                 <Link
                   key={label}
                   href={href}
-                  className="text-sm font-semibold tracking-[0.2em] text-white/60 hover:text-white transition-colors uppercase py-1"
+                  aria-current={isActive(href) ? "page" : undefined}
+                  className={`text-sm font-semibold tracking-[0.2em] hover:text-white transition-colors uppercase py-1 ${
+                    isActive(href) ? "text-white" : "text-white/60"
+                  }`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}

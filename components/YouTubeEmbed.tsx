@@ -23,9 +23,14 @@ export default function YouTubeEmbed({
   className = "",
 }: Props) {
   const [playing, setPlaying] = useState(false);
+  // maxresdefault.jpg 404s (grey placeholder) for videos without an HD
+  // thumbnail — fall back to the always-available hqdefault.jpg
+  const [thumbFailed, setThumbFailed] = useState(false);
 
   const hasVideo = videoId.length > 0;
-  const ytThumb = hasVideo ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : null;
+  const ytThumb = hasVideo
+    ? `https://i.ytimg.com/vi/${videoId}/${thumbFailed ? "hqdefault" : "maxresdefault"}.jpg`
+    : null;
   const thumbSrc = thumbnail || ytThumb;
 
   const playIconSize = size === "small"
@@ -73,6 +78,9 @@ export default function YouTubeEmbed({
               : "opacity-30"
           }`}
           sizes="(max-width: 1024px) 100vw, 50vw"
+          onError={() => {
+            if (!thumbnail && !thumbFailed) setThumbFailed(true);
+          }}
         />
       )}
 
