@@ -13,6 +13,8 @@ type Props = {
   priority?: boolean
   /** Position the visible area from the Studio hotspot (profile/portrait shots). */
   useHotspot?: boolean
+  /** contain for lightbox-style letterboxing */
+  fit?: 'cover' | 'contain'
 }
 
 /**
@@ -29,6 +31,7 @@ export default function SanityImage({
   className = '',
   priority = false,
   useHotspot = false,
+  fit = 'cover',
 }: Props) {
   const src = imageUrl(image, width, height)
   if (!src) return null
@@ -39,7 +42,7 @@ export default function SanityImage({
       alt={image?.alt || alt}
       fill
       priority={priority}
-      className={`object-cover ${className}`.trim()}
+      className={`${fit === 'contain' ? 'object-contain' : 'object-cover'} ${className}`.trim()}
       style={useHotspot ? { objectPosition: hotspotPosition(image) } : undefined}
       sizes={sizes}
       placeholder={image?.lqip ? 'blur' : 'empty'}

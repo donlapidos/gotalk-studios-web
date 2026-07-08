@@ -128,3 +128,27 @@ export const ALL_SERVICES_QUERY = defineQuery(`
     pricingNote
   }
 `)
+
+export const GALLERY_PAGE_QUERY = defineQuery(`{
+  "settings": *[_type == "gallerySettings"][0] {
+    singlePrice,
+    packs,
+    watermarkText,
+    watermarkStyle
+  },
+  "collections": *[_type == "galleryCollection"] | order(orderRank asc) {
+    _id,
+    name,
+    badge
+  },
+  "items": *[_type == "galleryItem"] | order(collection->orderRank asc, coalesce(orderRank, 9999) asc, _createdAt desc) {
+    _id,
+    title,
+    mediaType,
+    image{ ..., "lqip": asset->metadata.lqip },
+    youtubeUrl,
+    duration,
+    description,
+    collection->{ _id, name, badge }
+  }
+}`)

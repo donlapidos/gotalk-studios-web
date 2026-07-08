@@ -31,5 +31,27 @@ export const structure: StructureResolver = (S) =>
             .defaultOrdering([{ field: 'orderRank', direction: 'asc' }])
         ),
       S.divider(),
+      S.listItem()
+        .title('Gallery Settings')
+        .id('gallerySettings')
+        .child(
+          S.document()
+            .schemaType('gallerySettings')
+            .documentId('gallerySettings')
+        ),
+      S.listItem()
+        .title('Gallery Collections')
+        .child(
+          S.documentTypeList('galleryCollection')
+            .title('Gallery Collections')
+            .defaultOrdering([{ field: 'orderRank', direction: 'asc' }])
+        ),
+      S.listItem()
+        .title('Gallery Items')
+        .child(
+          S.documentTypeList('galleryItem')
+            .title('Gallery Items')
+        ),
+      S.divider(),
       S.documentTypeListItem('blogPost').title('Blog Posts'),
     ])

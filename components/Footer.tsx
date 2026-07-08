@@ -21,6 +21,7 @@ export default function Footer() {
               { label: "Episodes", href: "/episodes" },
               { label: "Services", href: "/services" },
               { label: "Guests", href: "/guests" },
+              { label: "Gallery", href: "/gallery" },
               { label: "Blog", href: "/blog" },
               { label: "About", href: "/about" },
               { label: "Contact", href: "/contact" },

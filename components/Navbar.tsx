@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "EPISODES", href: "/episodes" },
   { label: "SERVICES", href: "/services" },
   { label: "GUESTS", href: "/guests" },
+  { label: "GALLERY", href: "/gallery" },
   { label: "BLOG", href: "/blog" },
   { label: "ABOUT", href: "/about" },
 ];
