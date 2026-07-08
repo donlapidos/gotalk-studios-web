@@ -2,9 +2,15 @@
 
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const TO = 'hello@gotalkstudios.com'
 const FROM = 'GoTalk Studios <no-reply@gotalkstudios.com>'
+
+// Constructed lazily — new Resend(undefined) throws at module load, which
+// would 500 every action call when the env var is missing (e.g. local dev)
+function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY
+  return apiKey ? new Resend(apiKey) : null
+}
 
 type Result = { success: boolean; error?: string }
 
@@ -35,6 +41,12 @@ export async function submitGuestInquiry(_: Result | null, formData: FormData): 
 
   if (!name || !email || !pitch) {
     return { success: false, error: 'Please fill in all required fields.' }
+  }
+
+  const resend = getResend()
+  if (!resend) {
+    console.error('Guest inquiry: RESEND_API_KEY is not set')
+    return { success: false, error: 'Something went wrong. Please try again.' }
   }
 
   try {
@@ -70,6 +82,12 @@ export async function submitSponsorshipInquiry(_: Result | null, formData: FormD
 
   if (!company || !contact || !email) {
     return { success: false, error: 'Please fill in all required fields.' }
+  }
+
+  const resend = getResend()
+  if (!resend) {
+    console.error('Sponsorship inquiry: RESEND_API_KEY is not set')
+    return { success: false, error: 'Something went wrong. Please try again.' }
   }
 
   try {
