@@ -7,4 +7,9 @@ import { client } from './client'
 export const { sanityFetch, SanityLive } = defineLive({
   client,
   serverToken: process.env.SANITY_API_READ_TOKEN,
+  // Safety net: live events only reach the server through browsers that are
+  // connected when content is published — publish with no visitors and a
+  // static page stays stale indefinitely. This caps staleness at 60s while
+  // live revalidation still applies instantly for connected visitors.
+  fetchOptions: { revalidate: 60 },
 });
