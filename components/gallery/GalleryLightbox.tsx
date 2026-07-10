@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import SanityImage from '@/components/SanityImage'
 import Watermark from './Watermark'
+import { imageAspect } from '@/sanity/lib/image'
 import { extractYouTubeId } from '@/lib/youtube'
 import type { GalleryItem, GallerySettings } from './types'
 
@@ -27,6 +28,8 @@ export default function GalleryLightbox({
 }: Props) {
   const isPhoto = item.mediaType === 'photo'
   const videoId = extractYouTubeId(item.youtubeUrl)
+  // Size the pane to the photo's real shape so nothing gets cropped away
+  const photoAspect = isPhoto ? (imageAspect(item.image) ?? 4 / 5) : null
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -73,17 +76,18 @@ export default function GalleryLightbox({
       <div className="flex flex-col lg:flex-row gap-1 max-w-5xl w-full max-h-[85vh] shadow-[0_24px_48px_rgba(0,0,0,0.5)] overflow-auto lg:overflow-visible">
         {/* Media pane */}
         <div
-          className={`relative lg:flex-[1.6] bg-[#1C1B1B] overflow-hidden min-w-0 shrink-0 ${
-            isPhoto ? 'aspect-[4/5] max-h-[55vh] lg:max-h-none' : 'aspect-video'
+          className={`gallery-protect relative lg:flex-[1.6] bg-[#1C1B1B] overflow-hidden min-w-0 shrink-0 ${
+            isPhoto ? 'max-h-[60vh] lg:max-h-none' : 'aspect-video'
           }`}
+          style={photoAspect ? { aspectRatio: String(photoAspect) } : undefined}
+          onContextMenu={(e) => e.preventDefault()}
         >
           {isPhoto && item.image?.asset ? (
             <>
               <SanityImage
                 image={item.image}
                 alt={item.title}
-                width={1200}
-                height={1500}
+                width={1600}
                 fit="contain"
                 sizes="(max-width: 1024px) 100vw, 60vw"
               />

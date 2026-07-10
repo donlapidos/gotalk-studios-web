@@ -7,7 +7,8 @@ type Props = {
   alt: string
   /** Dimensions the Sanity CDN crops to — pick roughly 2× the rendered size. */
   width: number
-  height: number
+  /** Omit to keep the image's natural aspect ratio (no CDN crop). */
+  height?: number
   sizes: string
   className?: string
   priority?: boolean

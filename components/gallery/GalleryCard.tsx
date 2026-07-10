@@ -22,8 +22,9 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
       <button
         type="button"
         onClick={onOpen}
+        onContextMenu={(e) => e.preventDefault()}
         aria-label={`Open ${item.title}`}
-        className={`relative w-full overflow-hidden bg-[#232221] cursor-pointer text-left ${isPhoto ? 'aspect-[4/5]' : 'aspect-video'}`}
+        className={`gallery-protect relative w-full overflow-hidden bg-[#232221] cursor-pointer text-left ${isPhoto ? 'aspect-[4/5]' : 'aspect-video'}`}
       >
         {isPhoto && item.image?.asset ? (
           <SanityImage

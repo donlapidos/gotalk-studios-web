@@ -53,6 +53,15 @@ body {
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #CC0000; }
 
+/* Deter casual save attempts on gallery previews: no right-click target,
+   no drag-to-desktop. (Screenshots remain possible — the real protection is
+   the capped resolution and baked watermark.) */
+.gallery-protect img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 /* Gallery selection-tray pulse dot */
 @keyframes gt-pulse {
   0%, 100% { opacity: 1; box-shadow: 0 0 24px rgba(204,0,0,0.35); }

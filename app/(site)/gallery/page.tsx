@@ -12,7 +12,7 @@ import {
 import { FadeIn, FadeUp, DrawLine, LineRevealScroll } from '@/components/motion'
 
 export const metadata: Metadata = {
-  title:       'Gallery | GoTalk Studios',
+  title:       'Gallery',
   description: 'Photos and films from the field across Sarawak — browse the GoTalk Studios archive and take the frames you want home.',
   openGraph: {
     title:       'Gallery | GoTalk Studios',
