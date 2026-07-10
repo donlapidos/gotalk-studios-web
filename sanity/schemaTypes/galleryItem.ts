@@ -9,7 +9,14 @@ export const galleryItem = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (R) => R.required(),
+      description:
+        'Optional for photos — the uploaded filename (e.g. DSC00745) is used automatically. Required for videos and films.',
+      validation: (R) =>
+        R.custom((value, context) => {
+          const doc = context.document as { mediaType?: string } | undefined
+          if (doc?.mediaType !== 'photo' && !value) return 'Videos and films need a title'
+          return true
+        }),
     }),
     defineField({
       name: 'mediaType',
@@ -84,10 +91,17 @@ export const galleryItem = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title', media: 'image', mediaType: 'mediaType', badge: 'collection.badge' },
-    prepare({ title, media, mediaType, badge }) {
+    select: {
+      title: 'title',
+      filename: 'image.asset.originalFilename',
+      media: 'image',
+      mediaType: 'mediaType',
+      badge: 'collection.badge',
+    },
+    prepare({ title, filename, media, mediaType, badge }) {
       const kind = typeof mediaType === 'string' ? mediaType.toUpperCase() : ''
-      return { title, subtitle: [badge, kind].filter(Boolean).join(' · '), media }
+      const fallback = typeof filename === 'string' ? filename.replace(/\.[^.]+$/, '') : 'Untitled'
+      return { title: title || fallback, subtitle: [badge, kind].filter(Boolean).join(' · '), media }
     },
   },
 })

@@ -37,10 +37,19 @@ export default async function GalleryPage() {
     watermarkStyle: (s?.watermarkStyle as WatermarkStyle) ?? DEFAULT_GALLERY_SETTINGS.watermarkStyle,
   }
   const collections = (data?.collections ?? []) as GalleryCollection[]
-  // Photos without an uploaded image can't be displayed or sold — drop them
-  const items = ((data?.items ?? []) as GalleryItem[]).filter(
-    (it) => it.mediaType !== 'photo' || it.image?.asset
-  )
+  // Photos without an uploaded image can't be displayed or sold — drop them.
+  // Untitled photos fall back to the uploaded file's name (sans extension),
+  // which is also what order fulfilment matches against in Drive.
+  type RawItem = Omit<GalleryItem, 'title'> & {
+    title: string | null
+    originalFilename: string | null
+  }
+  const items: GalleryItem[] = ((data?.items ?? []) as RawItem[])
+    .filter((it) => it.mediaType !== 'photo' || it.image?.asset)
+    .map(({ originalFilename, ...it }) => ({
+      ...it,
+      title: it.title ?? originalFilename?.replace(/\.[^.]+$/, '') ?? 'Untitled',
+    }))
 
   const tiers = [
     { label: '1 Frame', price: settings.singlePrice, note: 'Single download' },

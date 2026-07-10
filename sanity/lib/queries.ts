@@ -144,6 +144,7 @@ export const GALLERY_PAGE_QUERY = defineQuery(`{
   "items": *[_type == "galleryItem"] | order(collection->orderRank asc, coalesce(orderRank, 9999) asc, _createdAt desc) {
     _id,
     title,
+    "originalFilename": image.asset->originalFilename,
     mediaType,
     image{ ..., "lqip": asset->metadata.lqip },
     youtubeUrl,
