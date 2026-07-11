@@ -9,9 +9,10 @@ import { dataset, projectId, apiVersion } from '@/sanity/env'
 const API = `https://${projectId}.api.sanity.io/${apiVersion.startsWith('v') ? apiVersion : `v${apiVersion}`}`
 
 function passwordOk(given: string): boolean {
-  const expected = process.env.GALLERY_UPLOAD_PASSWORD
+  // Trimmed on both sides — pasted env values often carry a stray newline
+  const expected = (process.env.GALLERY_UPLOAD_PASSWORD ?? '').trim()
   if (!expected) return false
-  const a = Buffer.from(given)
+  const a = Buffer.from(given.trim())
   const b = Buffer.from(expected)
   return a.length === b.length && timingSafeEqual(a, b)
 }
