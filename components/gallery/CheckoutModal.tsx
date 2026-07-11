@@ -57,9 +57,9 @@ export default function CheckoutModal({ items, total, savings, onClose, onFinish
               The Frames Are Almost Yours.
             </h2>
             <p className="text-sm leading-relaxed text-white/60">
-              We&apos;ve received your order. We&apos;ll email you payment details (DuitNow / bank
-              transfer), and your full-resolution, watermark-free files follow as soon as payment
-              clears.
+              We&apos;ve received your order — payment details (DuitNow QR / bank transfer) are on
+              their way to your inbox right now. Check spam if you don&apos;t see them within a
+              minute. Your full-resolution, watermark-free files follow as soon as payment clears.
             </p>
             <div className="flex flex-col gap-1">
               {items.map((it) => (

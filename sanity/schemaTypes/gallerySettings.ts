@@ -34,6 +34,24 @@ export const gallerySettings = defineType({
       ],
     }),
     defineField({
+      name: 'payment',
+      title: 'Payment Details (sent to buyers automatically)',
+      type: 'object',
+      description:
+        'Included in the automatic reply when someone places an order. Leave empty to send order confirmations without payment instructions.',
+      fields: [
+        defineField({
+          name: 'duitnowQr',
+          title: 'DuitNow QR',
+          type: 'image',
+          description: 'Screenshot/export of the DuitNow QR from the bank app',
+        }),
+        defineField({ name: 'bankName', title: 'Bank', type: 'string' }),
+        defineField({ name: 'accountNumber', title: 'Account Number', type: 'string' }),
+        defineField({ name: 'accountName', title: 'Account Holder Name', type: 'string' }),
+      ],
+    }),
+    defineField({
       name: 'watermarkText',
       title: 'Watermark Text',
       type: 'string',

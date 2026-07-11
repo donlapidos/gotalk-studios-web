@@ -1,6 +1,8 @@
 'use server'
 
 import { Resend } from 'resend'
+import { client } from '@/sanity/lib/client'
+import { imageUrl } from '@/sanity/lib/image'
 
 const TO = 'hello@gotalkstudios.com'
 const FROM = 'GoTalk Studios <no-reply@gotalkstudios.com>'
@@ -8,6 +10,13 @@ const FROM = 'GoTalk Studios <no-reply@gotalkstudios.com>'
 type Result = { success: boolean; error?: string }
 
 type OrderItem = { id: string; title: string; badge: string }
+
+type PaymentSettings = {
+  duitnowQr: unknown
+  bankName: string | null
+  accountNumber: string | null
+  accountName: string | null
+} | null
 
 function field(formData: FormData, key: string): string {
   const v = formData.get(key)
@@ -60,27 +69,96 @@ export async function submitGalleryOrder(_: Result | null, formData: FormData): 
   }
   const resend = new Resend(apiKey)
 
+  // Short human-quotable reference tying the buyer's payment to this order
+  const orderRef = `GT-${Date.now().toString(36).toUpperCase().slice(-5)}`
+
+  // Payment details are editor-managed in Gallery Settings so the account
+  // holder can change them without a deploy. Missing details degrade to a
+  // confirmation email without payment instructions.
+  let payment: PaymentSettings = null
+  try {
+    payment = await client.fetch(
+      `*[_type == "gallerySettings"][0].payment{ duitnowQr, bankName, accountNumber, accountName }`
+    )
+  } catch (err) {
+    console.error('Gallery order: could not load payment settings:', err)
+  }
+  const qrUrl = payment?.duitnowQr ? imageUrl(payment.duitnowQr, 600) : null
+  const bankLines = [
+    payment?.bankName ? `Bank:           ${payment.bankName}` : null,
+    payment?.accountNumber ? `Account number: ${payment.accountNumber}` : null,
+    payment?.accountName ? `Account name:   ${payment.accountName}` : null,
+  ].filter((l): l is string => l !== null)
+  const hasPaymentDetails = qrUrl !== null || bankLines.length > 0
+
+  const frameList = items.map(
+    (it, i) => `${i + 1}. ${it.title}${it.badge ? ` [${it.badge}]` : ''}`
+  )
+
   try {
     await resend.emails.send({
       from: FROM,
       to: TO,
       replyTo: email,
-      subject: `Gallery Order — ${items.length} frame${items.length === 1 ? '' : 's'} — ${oneLine(total)}`,
+      subject: `Gallery Order ${orderRef} — ${items.length} frame${items.length === 1 ? '' : 's'} — ${oneLine(total)}`,
       text: [
+        `Order ref:    ${orderRef}`,
         `Buyer email:  ${email}`,
         `Frames:       ${items.length}`,
         `Quoted total: ${total} (at current site pricing — verify before invoicing)`,
         '',
         'Selected frames:',
-        ...items.map((it, i) => `${i + 1}. ${it.title}${it.badge ? ` [${it.badge}]` : ''} — id: ${it.id}`),
+        ...items.map((it, i) => `${frameList[i]} — id: ${it.id}`),
         '',
-        'Reply to the buyer with payment details (DuitNow / bank transfer).',
-        'After payment, send the full-resolution files from Google Drive.',
+        hasPaymentDetails
+          ? `The buyer was automatically sent payment details with reference ${orderRef}.`
+          : 'NOTE: No payment details are set in Gallery Settings — the buyer only received an order confirmation. Reply to them with payment instructions.',
+        'Once payment shows up in the account, send the full-resolution files from Google Drive.',
       ].join('\n'),
     })
-    return { success: true }
   } catch (err) {
     console.error('Gallery order email failed:', err)
     return { success: false, error: 'Something went wrong sending your order. Please try again.' }
   }
+
+  // Buyer auto-reply — best-effort: the order is already with the studio, so
+  // a failure here must not fail the order
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      replyTo: TO,
+      subject: `Your GoTalk Studios order ${orderRef} — payment details`,
+      text: [
+        `Thanks for your order! Reference: ${orderRef}`,
+        '',
+        `Frames (${items.length}):`,
+        ...frameList,
+        `Total: ${total}`,
+        '',
+        ...(hasPaymentDetails
+          ? [
+              'How to pay:',
+              ...(qrUrl ? ['• Scan the attached DuitNow QR with your banking app, or'] : []),
+              ...(bankLines.length > 0 ? ['• Transfer to:', ...bankLines.map((l) => `  ${l}`)] : []),
+              '',
+              `Please put ${orderRef} as the payment reference/description.`,
+              'Once paid, reply to this email with your receipt and we will send your',
+              'full-resolution, watermark-free files.',
+            ]
+          : [
+              'We will follow up shortly with payment details. Once payment clears,',
+              'your full-resolution, watermark-free files will be on their way.',
+            ]),
+        '',
+        '— GoTalk Studios',
+        'Real People. Real Stories. Real Sarawak.',
+      ].join('\n'),
+      ...(qrUrl ? { attachments: [{ path: qrUrl, filename: 'gotalk-duitnow-qr.png' }] } : {}),
+    })
+  } catch (err) {
+    console.error(`Gallery order ${orderRef}: buyer auto-reply failed:`, err)
+  }
+
+  return { success: true }
 }
