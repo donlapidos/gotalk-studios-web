@@ -31,6 +31,14 @@ export const service = defineType({
       description: "Short hook line, e.g. 'Launch Your Podcast the Right Way!'",
     }),
     defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: { hotspot: true },
+      description:
+        'Studio/service photo. Featured cards show it in the media half; compact cards use it as a dark background. Falls back to the number graphic when empty.',
+    }),
+    defineField({
       name: 'features',
       title: 'Features',
       type: 'array',

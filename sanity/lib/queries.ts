@@ -121,6 +121,7 @@ export const ALL_SERVICES_QUERY = defineQuery(`
     serviceNumber,
     name,
     tagline,
+    image{ ..., "lqip": asset->metadata.lqip },
     features,
     perfectFor,
     featured,
