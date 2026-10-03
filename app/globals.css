@@ -1,24 +1,217 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-brand-black: #111111;
-  --color-brand-red: #CC0000;
-  --color-brand-white: #FFFFFF;
-  --color-brand-gray: #1A1A1A;
-  --color-brand-gray-mid: #2A2A2A;
-  --color-brand-gray-light: #888888;
+/* ─────────────────────────────────────────────────────────────────────────────
+   Design tokens
+
+   Every value the UI is allowed to use lives here. Two rules keep it honest:
+
+   1. Brand red (#CC0000) is a FILL, a RULE, and DISPLAY TYPE ≥24px. It never
+      carries small text: its ceiling against our darkest ground is 3.30:1,
+      below the 4.5:1 body-text floor. When red small text is genuinely needed,
+      use --color-accent (#FF4D4D → 5.78:1 on base, 5.32:1 on raised).
+   2. The text ladder bottoms out at white/45 (4.52:1 on base). Anything below
+      that is a border or a watermark, never a word.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Dark surfaces — four deliberate steps, replacing 15 accumulated near-blacks.
+     `alt` is the alternating section band that does the page's grouping work;
+     `sunken` is a real 7-value step down so the layering is actually visible. */
+  --color-surface-base:      #111111;
+  --color-surface-alt:       #161616;
+  --color-surface-sunken:    #0A0A0A;
+  --color-surface-raised:    #1A1A1A;
+  --color-surface-overlay:   #262626;
+
+  /* Light surfaces.
+     `light` (#F0F0EE) is 16.5:1 against the page ground — as a small chip that
+     reads as a highlight, but across a large card plate it reads as a hole
+     punched in the page. `paper` is a warm bone at 14.8:1: still a decisive value
+     flip, but it reads as newsprint rather than a lightbox, so a big plate can sit
+     next to near-black without clashing. Large plates use `paper`; `light` and
+     `light-alt` stay for small chips and the existing episode plate. */
+  --color-surface-light:     #F0F0EE;
+  --color-surface-light-alt: #E5E2E1;
+  --color-surface-paper:     #E8E3DA;
+
+  /* Brand */
+  --color-brand-red:         #CC0000;
+  --color-brand-red-hover:   #AA0000;
+  --color-brand-black:       #111111;
+  --color-brand-white:       #FFFFFF;
+
+  /* Accent — the only red permitted on small text on DARK grounds. 5.78:1 on
+     surface-base, 5.32:1 on surface-raised. It has no headroom on light surfaces
+     (2.87:1 on paper), so it must never be used there. */
+  --color-accent:            #FF4D4D;
+
+  /* The inverse case: red as small text on a LIGHT plate. Brand red only reaches
+     4.61:1 on paper, so red ink there is a deeper mix — 6.17:1 on paper. */
+  --color-brand-red-ink:     #A80000;
+
+  /* Ink on light surfaces. 5.61:1 on surface-light — the cream plates previously
+     ran gray-400 at 2.28:1, the worst contrast group on the site. Full-strength
+     ink is `text-surface-base`, which the cards already use. */
+  --color-ink-muted:         #5A5F6A;
+
+  /* Type scale — replacing 34 ad-hoc sizes with one monotonic ladder.
+     12px is the floor for any real text; the old 9/10/11px labels are gone.
+     The upper steps are redeclared too, so overriding xl/2xl can't leave them
+     larger than the 3xl/4xl they sit below. */
+  --text-2xs:   0.75rem;    /* 12px — smallest permitted label */
+  --text-xs:    0.8125rem;  /* 13px */
+  --text-sm:    0.9375rem;  /* 15px */
+  --text-base:  1.0625rem;  /* 17px */
+  --text-lg:    1.25rem;    /* 20px */
+  --text-xl:    1.5rem;     /* 24px — floor for brand-red type */
+  --text-2xl:   2rem;       /* 32px */
+  --text-3xl:   2.5rem;     /* 40px */
+  --text-4xl:   3.25rem;    /* 52px */
+  --text-5xl:   4rem;       /* 64px */
+  --text-6xl:   5rem;       /* 80px */
+  --text-7xl:   6rem;       /* 96px — display ceiling per the craft floor */
+
+  /* `font-display` replaces the `font-[family-name:var(--font-bebas-neue)]`
+     arbitrary-value expression that was repeated 69 times across 26 files. */
   --font-display: var(--font-bebas-neue);
-  --font-sans: var(--font-inter);
+  --font-sans:    var(--font-inter);
+
+  /* Tracking — a floor, not a decoration. Wide tracking is for short caps
+     labels only; it was previously applied to 9px text and to phrases long
+     enough that word cohesion broke. */
+  --tracking-label: 0.18em;
+  --tracking-wide:  0.08em;
 }
 
 :root {
-  --background: #111111;
+  --background: var(--color-surface-base);
   --foreground: #FFFFFF;
 }
 
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Red as mass ─────────────────────────────────────────────────────────────
+   Brand red can't carry small text — it tops out at 3.30:1 on our darkest ground.
+   The answer is not a timid red, it's a bigger one: red belongs to planes, plates,
+   bands, and images. These devices spend the colour as AREA, where it has all the
+   saturation it wants and contrast stops being the constraint.
+
+   1. `.section-label` — a solid red plate with the label knocked out in white
+      (5.89:1). Replaces the thin-rule-plus-tracked-caps kicker, which spent red
+      on a 1px line and 9px letters.
+   2. `.plate-light` — the cream plane. In an all-black layout a light field is the
+      strongest focal device available, and red reads at full strength on it. */
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.375rem 0.875rem;
+  background: var(--color-brand-red);
+  color: #FFFFFF;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ─── Section header ──────────────────────────────────────────────────────────
+   A label plate alone above a heading is still just a chip floating over text.
+   This binds the two into one structural device: the plate sits flush left, a red
+   rule runs from it to the far edge of the measure, and the heading hangs beneath
+   on the same left margin. The rule is what makes it read as a masthead rather
+   than a caption. */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.section-head__rule {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--color-brand-red) 0%,
+    var(--color-brand-red) 22%,
+    color-mix(in srgb, var(--color-brand-red) 22%, transparent) 100%
+  );
+}
+/* Same device inverted for light plates, where full-strength red is too hot. */
+.section-head__rule--ink {
+  background: linear-gradient(
+    to right,
+    var(--color-brand-red-ink) 0%,
+    var(--color-brand-red-ink) 22%,
+    color-mix(in srgb, var(--color-brand-red-ink) 18%, transparent) 100%
+  );
+}
+
+/* ─── Section rhythm ──────────────────────────────────────────────────────────
+   One scale. The site previously ran 56 / 80 / 96 / 112 / 144px section padding
+   with nothing shared between routes. */
+.section-y      { padding-block: 5rem; }
+.section-y-tight{ padding-block: 3.5rem; }
+@media (min-width: 1024px) {
+  .section-y      { padding-block: 8rem; }
+  .section-y-tight{ padding-block: 5rem; }
+}
+
+/* ─── Focus ───────────────────────────────────────────────────────────────────
+   A single visible indicator for everything. Form controls previously set
+   `focus:outline-none` and substituted a 1px border tint at 2.96:1, under the
+   3:1 non-text floor. White at 2px clears it against every surface we use. */
+:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+
+/* ─── Skip link ───────────────────────────────────────────────────────────────
+   There was no skip link on any page; keyboard users tabbed six nav links plus
+   a CTA on every load. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-brand-red);
+  color: #FFFFFF;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: top 0.2s ease-out;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ─── Motion ──────────────────────────────────────────────────────────────────
+   Scroll-reveal wrappers set inline opacity. If the IntersectionObserver never
+   fires — print, full-page capture, find-on-page, stalled hydration — the
+   content must still paint. `motion.tsx` now always asserts a value; these are
+   the belt-and-braces cases where JS state is irrelevant. */
+@media print {
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -27,14 +220,11 @@ html { scroll-behavior: smooth; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Reduced motion must not mean reduced content. */
+  [style*="opacity"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* Noise / grain overlay */
@@ -49,9 +239,9 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #CC0000; }
+::-webkit-scrollbar-track { background: var(--color-surface-base); }
+::-webkit-scrollbar-thumb { background: var(--color-surface-overlay); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-red); }
 
 /* Deter casual save attempts on gallery previews: no right-click target,
    no drag-to-desktop. (Screenshots remain possible — the real protection is

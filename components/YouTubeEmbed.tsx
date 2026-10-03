@@ -59,7 +59,7 @@ export default function YouTubeEmbed({
   // ── Thumbnail / preview state ──────────────────────────────────────────────
   return (
     <div
-      className={`relative aspect-video bg-[#1A1A1A] overflow-hidden group ${hasVideo ? "cursor-pointer" : ""} ${className}`}
+      className={`relative aspect-video bg-surface-raised overflow-hidden group ${hasVideo ? "cursor-pointer" : ""} ${className}`}
       onClick={() => hasVideo && setPlaying(true)}
       role={hasVideo ? "button" : undefined}
       aria-label={hasVideo ? `Play ${title}` : undefined}
@@ -74,7 +74,7 @@ export default function YouTubeEmbed({
           fill
           className={`object-cover transition-all duration-700 ${
             hasVideo
-              ? "opacity-60 group-hover:opacity-85 group-hover:scale-105"
+              ? "opacity-85 group-hover:opacity-100 group-hover:scale-105"
               : "opacity-30"
           }`}
           sizes="(max-width: 1024px) 100vw, 50vw"
@@ -92,7 +92,7 @@ export default function YouTubeEmbed({
         <div
           className={`${playIconSize} rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-300 ${
             hasVideo
-              ? "group-hover:border-[#CC0000] group-hover:bg-[#CC0000] group-hover:scale-110"
+              ? "group-hover:border-brand-red group-hover:bg-brand-red group-hover:scale-110"
               : "opacity-20"
           }`}
         >
@@ -107,7 +107,7 @@ export default function YouTubeEmbed({
       {/* "Coming Soon" if no video */}
       {!hasVideo && (
         <div className="absolute inset-0 flex items-end justify-center pb-5 z-20">
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/25 border border-white/10 px-3 py-1">
+          <span className="text-2xs font-bold tracking-label uppercase text-white/55 border border-white/10 px-3 py-1">
             Video Coming Soon
           </span>
         </div>
@@ -115,7 +115,7 @@ export default function YouTubeEmbed({
 
       {/* Episode badge */}
       {badge && (
-        <div className="absolute top-4 left-4 z-10 bg-[#CC0000] text-white text-xs font-bold tracking-widest uppercase px-3 py-1">
+        <div className="absolute top-4 left-4 z-10 bg-brand-red text-white text-xs font-bold tracking-widest uppercase px-3 py-1">
           {badge}
         </div>
       )}

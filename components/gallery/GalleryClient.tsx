@@ -81,28 +81,34 @@ export default function GalleryClient({ items, collections, settings }: Props) {
       {/* Type tabs + count */}
       <div className="flex items-center justify-between flex-wrap gap-4 pb-5">
         <div className="flex gap-1 flex-wrap">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => setTab(t.key)}
-              className={`text-[11px] font-bold tracking-[0.2em] uppercase px-5 py-3 transition-all ${
-                tab === t.key ? 'bg-[#CC0000] text-white' : 'bg-[#1C1B1B] text-white/55 hover:text-white'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+          {/* A filter pill with nothing behind it is an advertised dead end:
+              SHORT FILMS and VIDEOS were offered as filters with 0 and 1 items.
+              Empty types are hidden, and each pill carries its own count. */}
+          {TABS.filter((t) => t.key === 'all' || counts[t.key as keyof typeof counts] > 0).map((t) => {
+            const n = t.key === 'all' ? items.length : counts[t.key as keyof typeof counts]
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setTab(t.key)}
+                aria-pressed={tab === t.key}
+                className={`inline-flex items-center gap-2 text-2xs font-bold tracking-wide uppercase px-5 min-h-[44px] transition-all ${
+                  tab === t.key ? 'bg-brand-red text-white' : 'bg-surface-raised text-white/70 hover:text-white'
+                }`}
+              >
+                {t.label}
+                {/* full white on the red fill: white/80 there is 4.03:1 */}
+                <span className={tab === t.key ? 'text-white' : 'text-white/55'}>{n}</span>
+              </button>
+            )
+          })}
         </div>
-        <span className="text-[11px] tracking-[0.25em] uppercase text-white/40">
-          {counts.photo} PHOTOS · {counts.video} VIDEOS · {counts.film} FILMS
-        </span>
       </div>
 
       {/* Collection filter */}
       {collections.length > 0 && (
         <div className="flex items-center flex-wrap gap-x-2 gap-y-1 pb-8">
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/35 mr-2">
+          <span className="text-2xs font-bold tracking-label uppercase text-white/70 mr-2">
             Collection —
           </span>
           {[{ _id: 'all', name: 'ALL', badge: '' }, ...collections].map((col) => {
@@ -112,8 +118,9 @@ export default function GalleryClient({ items, collections, settings }: Props) {
                 key={col._id}
                 type="button"
                 onClick={() => setCollectionId(col._id)}
-                className={`text-[10px] font-semibold tracking-[0.2em] uppercase px-3 py-2 transition-all ${
-                  on ? 'text-white shadow-[inset_0_-2px_0_#CC0000]' : 'text-white/45 hover:text-white'
+                aria-pressed={on}
+                className={`inline-flex items-center text-2xs font-semibold tracking-wide uppercase px-3 min-h-[44px] transition-all ${
+                  on ? 'text-white shadow-[inset_0_-2px_0_var(--color-brand-red)]' : 'text-white/70 hover:text-white'
                 }`}
               >
                 {col._id === 'all' ? 'ALL' : col.name}
@@ -125,11 +132,11 @@ export default function GalleryClient({ items, collections, settings }: Props) {
 
       {/* Grid / empty state */}
       {filtered.length === 0 ? (
-        <div className="bg-[#1C1B1B] px-8 py-16 text-center">
-          <p className="font-[family-name:var(--font-bebas-neue)] text-3xl tracking-[0.05em] uppercase text-white/50">
+        <div className="bg-surface-raised px-8 py-16 text-center">
+          <p className="font-display text-3xl tracking-[0.05em] uppercase text-white/50">
             Nothing in this cut.
           </p>
-          <p className="text-[13px] text-white/40 mt-3">Try a different collection or media type.</p>
+          <p className="text-xs text-white/55 mt-3">Try a different collection or media type.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-1 [grid-auto-flow:dense]">

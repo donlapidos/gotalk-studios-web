@@ -36,7 +36,7 @@ export const service = defineType({
       type: 'image',
       options: { hotspot: true },
       description:
-        'Studio/service photo. Featured cards show it in the media half; compact cards use it as a dark background. Falls back to the number graphic when empty.',
+        'Photo of the room or of the work. Shown full colour at the top of the card; the card simply has no photo when empty.',
     }),
     defineField({
       name: 'features',
@@ -57,8 +57,22 @@ export const service = defineType({
       name: 'featured',
       title: 'Featured (Large Card)',
       type: 'boolean',
-      description: 'Toggle on to render this service as a large two-column hero card.',
+      description: 'No longer used: services are grouped by "Group" below.',
       initialValue: false,
+      hidden: true,
+    }),
+    defineField({
+      name: 'group',
+      title: 'Group',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Rent the room', value: 'room' },
+          { title: 'Hire the crew', value: 'crew' },
+        ],
+        layout: 'radio',
+      },
+      description: 'Which half of the Services page this sits in. If empty, services named "…Rental" go under "Rent the room".',
     }),
     defineField({
       name: 'pricingRows',
@@ -81,7 +95,7 @@ export const service = defineType({
       name: 'pricingNote',
       title: 'Pricing Note',
       type: 'string',
-      description: "Optional note below pricing table, e.g. 'Raw footage delivery included'",
+      description: "Optional note below the price list, e.g. 'Raw footage delivery included'. When empty, the page says the final price is quoted per booking.",
     }),
     defineField({
       name: 'active',

@@ -26,13 +26,16 @@ export const episode = defineType({
     }),
     defineField({
       name: 'segment',
-      title: 'Segment',
+      title: 'Show',
       type: 'string',
+      description:
+        "Episodes in a show's YouTube playlist are sorted automatically; set this only to correct a video the site puts in the wrong show.",
       options: {
         list: [
           { title: 'Business', value: 'Business' },
           { title: 'Politics', value: 'Politics' },
           { title: 'Icons', value: 'Icons' },
+          { title: 'Voices', value: 'Voices' },
         ],
         layout: 'radio',
       },
@@ -86,8 +89,9 @@ export const episode = defineType({
       name: 'featured',
       title: 'Featured (Hero Episode)',
       type: 'boolean',
-      description: 'Toggle on to feature this episode on the homepage. Only one episode should be featured at a time — the most recently published featured episode will always take priority.',
+      description: 'No longer used: the homepage now always leads with the newest upload.',
       initialValue: false,
+      hidden: true,
     }),
   ],
   preview: {

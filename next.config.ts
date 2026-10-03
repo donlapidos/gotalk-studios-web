@@ -13,11 +13,17 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com", // Next.js requires unsafe-inline/eval; GA requires tagmanager + analytics
+      // Next.js requires unsafe-inline/eval; GA requires tagmanager + analytics.
+      // va.vercel-scripts.com was missing, so @vercel/analytics was blocked on
+      // every page load and never reported anything in production.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",                // Tailwind inline styles
-      "img-src 'self' data: blob: https://i.ytimg.com https://cdn.sanity.io",
+      "img-src 'self' data: blob: https://i.ytimg.com https://cdn.sanity.io https://www.google-analytics.com https://www.googletagmanager.com",
       "frame-src https://www.youtube-nocookie.com",
-      "connect-src 'self' https://*.api.sanity.io https://*.sanity.io wss://*.api.sanity.io https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
+      // GA4 posts hits to https://www.google.com/g/collect and, for some
+      // configurations, googletagmanager.com/td — both were absent, so a portion
+      // of analytics traffic was dropped at the browser.
+      "connect-src 'self' https://*.api.sanity.io https://*.sanity.io wss://*.api.sanity.io https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.google.com https://www.googletagmanager.com https://va.vercel-scripts.com https://vitals.vercel-insights.com",
       "font-src 'self'",                                 // next/font self-hosts at build time
       "media-src 'none'",
       "object-src 'none'",

@@ -12,6 +12,12 @@ export default function SiteLayout({
 }>) {
   return (
     <>
+      {/* There was no skip link on any page, so keyboard users tabbed six nav
+          links plus the CTA on every single load. Each page's <main> carries
+          id="main" as the target. */}
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <Navbar />
       {children}
       <Footer />

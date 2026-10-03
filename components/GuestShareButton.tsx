@@ -32,7 +32,7 @@ export default function GuestShareButton({ url, name }: { url: string; name: str
   return (
     <button
       onClick={handleShare}
-      className="w-11 h-11 bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-colors"
+      className="w-11 h-11 bg-surface-raised border border-white/10 flex items-center justify-center text-white/55 hover:text-white hover:border-white/25 transition-colors"
       aria-label={copied ? 'Link copied!' : 'Share'}
       title={copied ? 'Link copied!' : 'Share'}
     >

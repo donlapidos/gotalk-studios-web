@@ -17,14 +17,14 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
   const videoId = extractYouTubeId(item.youtubeUrl)
 
   return (
-    <div className={`flex flex-col border border-[#222] bg-[#1C1B1B] ${isPhoto ? '' : 'sm:col-span-2'}`}>
+    <div className={`flex flex-col border border-[#222] bg-surface-raised ${isPhoto ? '' : 'sm:col-span-2'}`}>
       {/* Media */}
       <button
         type="button"
         onClick={onOpen}
         onContextMenu={(e) => e.preventDefault()}
         aria-label={`Open ${item.title}`}
-        className={`gallery-protect relative w-full overflow-hidden bg-[#232221] cursor-pointer text-left ${isPhoto ? 'aspect-[4/5]' : 'aspect-video'}`}
+        className={`gallery-protect relative w-full overflow-hidden bg-surface-overlay cursor-pointer text-left ${isPhoto ? 'aspect-[4/5]' : 'aspect-video'}`}
       >
         {isPhoto && item.image?.asset ? (
           <SanityImage
@@ -43,7 +43,7 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
             sizes="(max-width: 640px) 100vw, 66vw"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#232221] to-[#CC0000]/10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-surface-overlay to-brand-red/10" />
         )}
 
         <div
@@ -54,7 +54,7 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
         {isPhoto && <Watermark text={settings.watermarkText} style={settings.watermarkStyle} />}
 
         {item.collection?.badge && (
-          <span className="absolute top-3 left-3 pointer-events-none font-[family-name:var(--font-bebas-neue)] text-sm tracking-[0.1em] text-[#131313] bg-[#E5E2E1] px-2 py-0.5">
+          <span className="absolute top-3 left-3 pointer-events-none font-display text-sm tracking-wide text-surface-raised bg-surface-light-alt px-2 py-0.5">
             {item.collection.badge}
           </span>
         )}
@@ -65,7 +65,7 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
               <span className="w-0 h-0 border-t-[16px] border-b-[16px] border-l-[26px] border-transparent border-l-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]" />
             </span>
             {item.duration && (
-              <span className="absolute bottom-3 right-3 pointer-events-none text-[11px] font-semibold tracking-[0.1em] text-white bg-[#0E0E0E]/75 px-2 py-0.5">
+              <span className="absolute bottom-3 right-3 pointer-events-none text-2xs font-semibold tracking-wide text-white bg-surface-sunken/75 px-2 py-0.5">
                 {item.duration}
               </span>
             )}
@@ -79,10 +79,10 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
         className="flex items-center justify-between gap-3 px-4 py-3.5 cursor-pointer"
       >
         <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="font-[family-name:var(--font-bebas-neue)] text-lg tracking-[0.05em] uppercase text-[#E5E2E1] truncate">
+          <span className="font-display text-lg tracking-[0.05em] uppercase text-surface-light-alt truncate">
             {item.title}
           </span>
-          <span className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/40 truncate">
+          <span className="text-2xs font-semibold tracking-label uppercase text-white/55 truncate">
             {item.collection?.name}
             {isPhoto ? ` · RM ${settings.singlePrice}` : ''}
           </span>
@@ -94,16 +94,17 @@ export default function GalleryCard({ item, selected, settings, onOpen, onToggle
               e.stopPropagation()
               onToggle()
             }}
-            className={`shrink-0 text-[10px] font-bold tracking-[0.2em] uppercase px-3.5 py-2.5 transition-all ${
+            aria-pressed={selected}
+            className={`shrink-0 inline-flex items-center justify-center min-h-[44px] text-2xs font-bold tracking-label uppercase px-3.5 transition-all ${
               selected
-                ? 'bg-[#CC0000] text-white outline outline-1 -outline-offset-1 outline-[#CC0000]'
-                : 'bg-transparent text-[#E5E2E1] outline outline-1 -outline-offset-1 outline-white/25 hover:outline-white'
+                ? 'bg-brand-red text-white outline outline-1 -outline-offset-1 outline-brand-red'
+                : 'bg-transparent text-surface-light-alt outline outline-1 -outline-offset-1 outline-white/25 hover:outline-white'
             }`}
           >
-            {selected ? 'SELECTED ✓' : 'SELECT'}
+            {selected ? 'Selected' : 'Select'}
           </button>
         ) : (
-          <span className="shrink-0 text-[11px] font-bold tracking-[0.2em] uppercase text-[#CC0000] whitespace-nowrap">
+          <span className="shrink-0 text-2xs font-bold tracking-label uppercase text-accent whitespace-nowrap">
             WATCH →
           </span>
         )}

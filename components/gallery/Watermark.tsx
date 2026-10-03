@@ -12,7 +12,7 @@ type Props = {
 export default function Watermark({ text, style, size = 'card' }: Props) {
   const lb = size === 'lightbox'
   const base =
-    'pointer-events-none select-none absolute inset-0 flex font-[family-name:var(--font-bebas-neue)] uppercase'
+    'pointer-events-none select-none absolute inset-0 flex font-display uppercase'
 
   if (style === 'diagonal') {
     return (

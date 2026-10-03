@@ -9,19 +9,19 @@ import {
   type GallerySettings,
   type WatermarkStyle,
 } from '@/components/gallery/types'
-import { FadeIn, FadeUp, DrawLine, LineRevealScroll } from '@/components/motion'
+import { FadeUp, LineRevealScroll } from '@/components/motion'
 
 export const metadata: Metadata = {
   title:       'Gallery',
   description: 'Photos and films from the field across Sarawak — browse the GoTalk Studios archive and take the frames you want home.',
   openGraph: {
-    title:       'Gallery | GoTalk Studios',
+    title:       'Gallery',
     description: 'Photos and films from the field across Sarawak — browse the GoTalk Studios archive and take the frames you want home.',
     url:         'https://gotalkstudios.com/gallery',
     type:        'website',
   },
   twitter: {
-    title:       'Gallery | GoTalk Studios',
+    title:       'Gallery',
     description: 'Photos and films from the field across Sarawak — browse the GoTalk Studios archive and take the frames you want home.',
   },
 }
@@ -51,20 +51,39 @@ export default async function GalleryPage() {
       title: it.title ?? originalFilename?.replace(/\.[^.]+$/, '') ?? 'Untitled',
     }))
 
+  // Sorted ascending by quantity. Sanity returns packs in document order, which
+  // rendered the ladder as 1 / 5 / 3 — so the bundle logic was unreadable and the
+  // "Save" figures appeared to shrink as you moved right. The per-frame unit price
+  // is shown on each tier so the saving needs no arithmetic, and the largest pack
+  // is flagged rather than left for the reader to work out.
+  const packs = [...settings.packs].sort((a, b) => a.qty - b.qty)
+  const unit = (price: number, qty: number) =>
+    `RM ${(price / qty).toFixed(2).replace(/\.00$/, '')} each`
+
   const tiers = [
-    { label: '1 Frame', price: settings.singlePrice, note: 'Single download' },
-    ...settings.packs.map((p) => ({
+    {
+      label: '1 Frame',
+      qty: 1,
+      price: settings.singlePrice,
+      note: 'Single download',
+      unit: unit(settings.singlePrice, 1),
+      best: false,
+    },
+    ...packs.map((p, i) => ({
       label: `${p.qty} Frames`,
+      qty: p.qty,
       price: p.price,
       note: `Save RM ${p.qty * settings.singlePrice - p.price}`,
+      unit: unit(p.price, p.qty),
+      best: i === packs.length - 1,
     })),
   ]
 
   return (
-    <main className="pt-16 bg-[#111111] min-h-screen">
+    <main id="main" tabIndex={-1} className="pt-16 bg-surface-base min-h-screen">
       {/* Hero */}
-      <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden noise">
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
+      <div className="relative bg-surface-base border-b border-white/10 overflow-hidden noise">
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red" />
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.035]"
           style={{
@@ -73,36 +92,24 @@ export default async function GalleryPage() {
             backgroundSize: '80px 80px',
           }}
         />
-        <div
-          className="absolute -right-[2%] -bottom-[6%] font-[family-name:var(--font-bebas-neue)] leading-[0.8] uppercase pointer-events-none select-none text-white/[0.025]"
-          style={{ fontSize: '22vw' }}
-          aria-hidden="true"
-        >
-          GALLERY
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
-          <FadeIn delay={0.1}>
-            <div className="flex items-center gap-3 mb-3">
-              <DrawLine delay={0.2} className="w-8 h-px bg-[#CC0000]" />
-              <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                In the Field
-              </span>
-            </div>
-          </FadeIn>
+        {/* The giant "GALLERY" watermark that sat here was clipped mid-glyph by
+            the viewport's right edge and sat underneath the body copy, so the
+            paragraph read on top of ghost letterforms. */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 section-y-tight">
           <LineRevealScroll>
-            <h1 className="font-[family-name:var(--font-bebas-neue)] text-6xl lg:text-8xl text-white tracking-wide mb-4">
-              Beyond the <span className="text-[#CC0000]">Studio.</span>
+            <h1 className="font-display text-5xl lg:text-7xl text-white tracking-wide mb-4">
+              Beyond the <span className="text-brand-red">Studio.</span>
             </h1>
           </LineRevealScroll>
           <FadeUp delay={0.2}>
-            <p className="text-white/65 text-lg max-w-xl leading-relaxed">
+            <p className="text-white/70 text-lg max-w-[62ch] leading-relaxed">
               The events we cover, the projects we shoot, the streets we walk — photos and films
               made outside the stage, across Sarawak. Browse the archive and take the frames you
               want home.
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
-            <p className="text-white/40 text-xs tracking-[0.15em] uppercase mt-5">
+            <p className="text-white/70 text-xs tracking-wide uppercase mt-5">
               Watermarked previews — full-resolution files unlock on purchase.
             </p>
           </FadeUp>
@@ -110,30 +117,23 @@ export default async function GalleryPage() {
       </div>
 
       {/* Grid */}
-      <div className="bg-[#111111] py-14 pb-28">
+      <div className="bg-surface-base py-14 pb-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <GalleryClient items={items} collections={collections} settings={settings} />
         </div>
       </div>
 
       {/* Pricing */}
-      <section className="bg-[#161616] border-t border-white/10 py-20 lg:py-24">
+      <section className="bg-surface-alt border-t border-white/10 section-y">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <FadeIn>
-            <div className="flex items-center gap-3 mb-4">
-              <DrawLine className="w-8 h-px bg-[#CC0000]" />
-              <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                Licensing
-              </span>
-            </div>
-          </FadeIn>
           <LineRevealScroll>
-            <h2 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-7xl text-white tracking-wide">
+            <p className="section-label mb-5">Licensing</p>
+            <h2 className="font-display text-5xl lg:text-6xl text-white tracking-wide">
               Take the Frames Home.
             </h2>
           </LineRevealScroll>
           <FadeUp delay={0.15}>
-            <p className="text-white/60 text-[15px] leading-relaxed max-w-lg mt-5 mb-12">
+            <p className="text-white/70 text-base leading-relaxed max-w-[60ch] mt-5 mb-12">
               Every purchase includes the full-resolution file — watermark-free, delivered by
               download link once payment clears.
             </p>
@@ -141,14 +141,26 @@ export default async function GalleryPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-1">
             {tiers.map((tier) => (
               <FadeUp key={tier.label}>
-                <div className="bg-[#232221] px-7 py-8 flex flex-col gap-2 h-full">
-                  <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/45">
+                <div
+                  className={`px-7 py-8 flex flex-col gap-2 h-full relative ${
+                    tier.best
+                      ? 'bg-surface-overlay border border-brand-red'
+                      : 'bg-surface-overlay border border-transparent'
+                  }`}
+                >
+                  {tier.best && (
+                    <span className="absolute -top-px right-0 bg-brand-red text-white text-2xs font-bold tracking-label uppercase px-2.5 py-1">
+                      Best value
+                    </span>
+                  )}
+                  <span className="text-2xs font-bold tracking-label uppercase text-white/70">
                     {tier.label}
                   </span>
-                  <span className="font-[family-name:var(--font-bebas-neue)] text-[44px] leading-none text-[#E5E2E1]">
+                  <span className="font-display text-5xl leading-none text-surface-light-alt">
                     RM {tier.price}
                   </span>
-                  <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#CC0000]">
+                  <span className="text-2xs text-white/70 tabular-nums">{tier.unit}</span>
+                  <span className="text-2xs font-semibold tracking-wide uppercase text-accent mt-auto">
                     {tier.note}
                   </span>
                 </div>

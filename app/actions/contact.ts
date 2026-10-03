@@ -12,7 +12,10 @@ function getResend(): Resend | null {
   return apiKey ? new Resend(apiKey) : null
 }
 
-type Result = { success: boolean; error?: string }
+// `summary` lets a success state show the user what was actually sent. The forms
+// previously replaced themselves with a bare confirmation, leaving no record of
+// the submission and no way to send another.
+type Result = { success: boolean; error?: string; summary?: string[] }
 
 // Tolerates missing fields (bots POSTing without the form) instead of throwing
 function field(formData: FormData, key: string): string {
@@ -29,6 +32,74 @@ function oneLine(s: string): string {
 // bots don't learn they were filtered.
 function isSpam(formData: FormData): boolean {
   return field(formData, 'website_url') !== ''
+}
+
+/**
+ * Studio booking — the site's primary conversion.
+ *
+ * Until this existed, every "Book Now" on the site landed on a page offering only
+ * a guest-appearance pitch and a sponsorship proposal, so the five services with
+ * published rates had no booking path at all.
+ */
+export async function submitStudioBooking(_: Result | null, formData: FormData): Promise<Result> {
+  if (isSpam(formData)) return { success: true }
+
+  const service   = field(formData, 'service')
+  const pkg       = field(formData, 'package')
+  const date      = field(formData, 'preferred_date')
+  const altDate   = field(formData, 'alt_date')
+  const name      = field(formData, 'name')
+  const whatsapp  = field(formData, 'whatsapp')
+  const email     = field(formData, 'email')
+  const notes     = field(formData, 'notes')
+
+  if (!service || !date || !name || !whatsapp) {
+    return {
+      success: false,
+      error: 'Please add a service, a preferred date, your name, and a WhatsApp number.',
+    }
+  }
+
+  const resend = getResend()
+  if (!resend) {
+    console.error('Studio booking: RESEND_API_KEY is not set')
+    return { success: false, error: 'Something went wrong. Please try again.' }
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: TO,
+      replyTo: email || undefined,
+      subject: `Studio Booking — ${oneLine(service)} — ${oneLine(date)}`,
+      text: [
+        `Service:         ${service}`,
+        `Package:         ${pkg || 'Not specified'}`,
+        `Preferred date:  ${date}`,
+        `Alternate date:  ${altDate || 'Not provided'}`,
+        '',
+        `Name:            ${name}`,
+        `WhatsApp:        ${whatsapp}`,
+        `Email:           ${email || 'Not provided'}`,
+        '',
+        'Notes:',
+        notes || 'None',
+      ].join('\n'),
+    })
+    return {
+      success: true,
+      summary: [
+        `Service: ${service}`,
+        ...(pkg ? [`Package: ${pkg}`] : []),
+        `Preferred date: ${date}`,
+        ...(altDate ? [`Alternate: ${altDate}`] : []),
+        `WhatsApp: ${whatsapp}`,
+      ],
+    }
+  } catch (err) {
+    console.error('Studio booking email failed:', err)
+    return { success: false, error: 'Something went wrong. Please try again.' }
+  }
 }
 
 export async function submitGuestInquiry(_: Result | null, formData: FormData): Promise<Result> {

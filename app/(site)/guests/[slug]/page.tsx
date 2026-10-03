@@ -158,13 +158,13 @@ export default async function GuestBioPage({ params }: Props) {
 
   return (
     <>
-      <main className="pt-16 bg-[#111111] min-h-screen">
+      <main id="main" tabIndex={-1} className="pt-16 bg-surface-base min-h-screen">
 
         {/* ── Top back-link ──────────────────────────────────────── */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 border-b border-white/5">
           <Link
             href="/guests"
-            className="text-xs font-bold tracking-[0.2em] uppercase text-white/30 hover:text-white transition-colors"
+            className="text-xs font-bold tracking-label uppercase text-white/55 hover:text-white transition-colors"
           >
             ← Back to Guests
           </Link>
@@ -174,7 +174,7 @@ export default async function GuestBioPage({ params }: Props) {
         <section className="grid lg:grid-cols-2 min-h-[85vh]">
 
           {/* Left: Photo */}
-          <SlideInLeft className="relative h-[70vw] lg:h-auto overflow-hidden bg-[#0A0A0A]">
+          <SlideInLeft className="relative h-[70vw] lg:h-auto overflow-hidden bg-surface-sunken">
             {guest.photo?.asset ? (
               <SanityImage
                 image={guest.photo}
@@ -186,7 +186,7 @@ export default async function GuestBioPage({ params }: Props) {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#0A0A0A]">
+              <div className="absolute inset-0 flex items-center justify-center bg-surface-sunken">
                 <svg viewBox="0 0 24 24" className="w-40 h-40 text-white/5" fill="currentColor" aria-hidden="true">
                   <path d="M12 12a5 5 0 110-10 5 5 0 010 10zm0 2c-5.33 0-8 2.67-8 4v1h16v-1c0-1.33-2.67-4-8-4z" />
                 </svg>
@@ -197,10 +197,10 @@ export default async function GuestBioPage({ params }: Props) {
           </SlideInLeft>
 
           {/* Right: Info */}
-          <div className="relative bg-[#0D0D0D] flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-20 py-16 lg:py-20 overflow-hidden">
+          <div className="relative bg-surface-sunken flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-20 py-16 lg:py-20 overflow-hidden">
             {/* Decorative rotated text */}
             <span
-              className="absolute right-6 top-1/2 text-white/[0.04] text-[11px] font-bold tracking-[0.5em] uppercase hidden lg:block select-none"
+              className="absolute right-6 top-1/2 text-white/[0.04] text-2xs font-bold tracking-[0.5em] uppercase hidden lg:block select-none"
               style={{ transform: 'translateY(-50%) rotate(90deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}
               aria-hidden="true"
             >
@@ -209,7 +209,7 @@ export default async function GuestBioPage({ params }: Props) {
 
             {/* Segment tag */}
             <FadeIn delay={0.1}>
-              <span className="text-[#CC0000] text-[11px] font-bold tracking-[0.3em] uppercase">
+              <span className="text-accent text-2xs font-bold tracking-label uppercase">
                 {guest.segment ? `${guest.segment} · ` : ''}Featured Guest
               </span>
             </FadeIn>
@@ -218,7 +218,7 @@ export default async function GuestBioPage({ params }: Props) {
             <div className="mt-5 mb-6">
               <FadeUp delay={0.2}>
                 <span
-                  className="block font-[family-name:var(--font-bebas-neue)] text-white leading-[0.9]"
+                  className="block font-display text-white leading-[0.9]"
                   style={{ fontSize: 'clamp(3.5rem, 8vw, 8.5rem)', letterSpacing: '0.01em' }}
                 >
                   {firstName || guest.name}
@@ -227,7 +227,7 @@ export default async function GuestBioPage({ params }: Props) {
               {lastName && (
                 <FadeUp delay={0.35}>
                   <span
-                    className="block font-[family-name:var(--font-bebas-neue)] text-[#CC0000] leading-[0.9]"
+                    className="block font-display text-brand-red leading-[0.9]"
                     style={{ fontSize: 'clamp(3.5rem, 8vw, 8.5rem)', letterSpacing: '0.01em' }}
                   >
                     {lastName}
@@ -238,12 +238,12 @@ export default async function GuestBioPage({ params }: Props) {
 
             <FadeIn delay={0.5}>
               {guest.title && (
-                <p className="text-white text-sm font-bold tracking-[0.25em] uppercase">
+                <p className="text-white text-sm font-bold tracking-label uppercase">
                   {guest.title}
                 </p>
               )}
               {guest.company && (
-                <p className="text-white/35 text-xs tracking-[0.2em] uppercase mt-1.5">
+                <p className="text-white/55 text-xs tracking-label uppercase mt-1.5">
                   {guest.company}
                 </p>
               )}
@@ -253,8 +253,8 @@ export default async function GuestBioPage({ params }: Props) {
             {guest.episode && (
               <FadeIn delay={0.65}>
                 <div className="mt-8 flex items-center gap-3">
-                  <span className="w-6 h-px bg-[#CC0000] inline-block" />
-                  <span className="text-white/25 text-[10px] tracking-[0.3em] uppercase">
+                  <span className="w-6 h-px bg-brand-red inline-block" />
+                  <span className="text-white/55 text-2xs tracking-label uppercase">
                     Episode {guest.episode.episodeNumber} · Season {guest.episode.season}
                   </span>
                 </div>
@@ -266,20 +266,20 @@ export default async function GuestBioPage({ params }: Props) {
 
         {/* ── Quote ─────────────────────────────────────────────── */}
         {guest.quote && (
-          <section className="bg-[#0A0A0A] border-t border-white/5 py-20 lg:py-28">
+          <section className="bg-surface-sunken border-t border-white/5 py-20 lg:py-28">
             <div className="max-w-5xl mx-auto px-6 lg:px-8">
               <div className="flex gap-6 lg:gap-10">
 
                 {/* Animated vertical red border */}
                 <DrawLineY
                   delay={0.5}
-                  className="w-1 bg-[#CC0000] shrink-0 self-stretch"
+                  className="w-1 bg-brand-red shrink-0 self-stretch"
                 />
 
                 <div className="min-w-0">
                   <FadeIn delay={0.2}>
                     <span
-                      className="font-[family-name:var(--font-bebas-neue)] text-[#CC0000] leading-none block"
+                      className="font-display text-brand-red leading-none block"
                       style={{ fontSize: 'clamp(4rem, 8vw, 7rem)' }}
                       aria-hidden="true"
                     >
@@ -297,15 +297,15 @@ export default async function GuestBioPage({ params }: Props) {
                       }}
                     >
                       {quoteHead}
-                      <span className="text-[#CC0000]">{quoteTail}</span>
+                      <span className="text-brand-red">{quoteTail}</span>
                     </blockquote>
                   </FadeUp>
 
                   {guest.episode && (
                     <FadeIn delay={0.9}>
                       <div className="mt-8 flex items-center gap-4">
-                        <div className="w-10 h-px bg-[#CC0000]" />
-                        <p className="text-white/30 text-[10px] tracking-[0.3em] uppercase">
+                        <div className="w-10 h-px bg-brand-red" />
+                        <p className="text-white/55 text-2xs tracking-label uppercase">
                           From Episode {guest.episode.episodeNumber}
                           {guest.episode.title ? `: ${guest.episode.title}` : ''}
                         </p>
@@ -320,7 +320,7 @@ export default async function GuestBioPage({ params }: Props) {
         )}
 
         {/* ── Bio + Connect ──────────────────────────────────────── */}
-        <section className="bg-[#111111] border-t border-white/5 py-16 lg:py-24">
+        <section className="bg-surface-base border-t border-white/5 py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid lg:grid-cols-[3fr_1fr] gap-12 lg:gap-20">
 
@@ -328,7 +328,7 @@ export default async function GuestBioPage({ params }: Props) {
               <div>
                 <FadeIn delay={0.1}>
                   <h2
-                    className="font-[family-name:var(--font-bebas-neue)] text-white tracking-wide mb-8"
+                    className="font-display text-white tracking-wide mb-8"
                     style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)' }}
                   >
                     Biography
@@ -340,20 +340,20 @@ export default async function GuestBioPage({ params }: Props) {
                     <PortableText value={guest.bio as Parameters<typeof PortableText>[0]['value']} components={guestPtComponents} />
                   </FadeUp>
                 ) : (
-                  <p className="text-white/30 text-sm italic">No biography available.</p>
+                  <p className="text-white/55 text-sm italic">No biography available.</p>
                 )}
 
                 {/* Domain Focus */}
                 {guest.domainFocus && guest.domainFocus.length > 0 && (
                   <div className="mt-10">
-                    <p className="text-[#CC0000] text-[10px] font-bold tracking-[0.35em] uppercase mb-4">
+                    <p className="text-accent text-2xs font-bold tracking-label uppercase mb-4">
                       Domain Focus
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {guest.domainFocus.map((tag) => (
                         <span
                           key={tag}
-                          className="px-3 py-1.5 border border-[#333] text-[#CC0000] text-[11px] font-bold tracking-[0.12em] uppercase"
+                          className="px-3 py-1.5 border border-[#333] text-accent text-2xs font-bold tracking-wide uppercase"
                         >
                           {tag}
                         </span>
@@ -366,7 +366,7 @@ export default async function GuestBioPage({ params }: Props) {
               {/* Right: Connect */}
               <div>
                 <FadeIn delay={0.15}>
-                  <p className="text-white/30 text-[10px] font-bold tracking-[0.35em] uppercase mb-5">
+                  <p className="text-white/55 text-2xs font-bold tracking-label uppercase mb-5">
                     Connect
                   </p>
                 </FadeIn>
@@ -384,7 +384,7 @@ export default async function GuestBioPage({ params }: Props) {
                         href={guest.socialLinks.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-11 h-11 bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-colors"
+                        className="w-11 h-11 bg-surface-raised border border-white/10 flex items-center justify-center text-white/55 hover:text-white hover:border-white/25 transition-colors"
                         aria-label="Website"
                       >
                         <GlobeIcon />
@@ -399,7 +399,7 @@ export default async function GuestBioPage({ params }: Props) {
                         href={guest.socialLinks.instagram}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-11 h-11 bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-colors"
+                        className="w-11 h-11 bg-surface-raised border border-white/10 flex items-center justify-center text-white/55 hover:text-white hover:border-white/25 transition-colors"
                         aria-label="Instagram"
                       >
                         <InstagramIcon />
@@ -414,7 +414,7 @@ export default async function GuestBioPage({ params }: Props) {
                         href={guest.socialLinks.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-11 h-11 bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 transition-colors"
+                        className="w-11 h-11 bg-surface-raised border border-white/10 flex items-center justify-center text-white/55 hover:text-white hover:border-white/25 transition-colors"
                         aria-label="LinkedIn"
                       >
                         <LinkedinIcon />
@@ -430,13 +430,13 @@ export default async function GuestBioPage({ params }: Props) {
 
         {/* ── Episode ───────────────────────────────────────────── */}
         {guest.episode && (
-          <section className="bg-[#0D0D0D] border-t border-white/5 py-16 lg:py-20">
+          <section className="bg-surface-sunken border-t border-white/5 py-16 lg:py-20">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
               <FadeUp delay={0.4}>
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
                   {/* Left: YouTube embed */}
-                  <div className="w-full aspect-video bg-[#0A0A0A]">
+                  <div className="w-full aspect-video bg-surface-sunken">
                     {videoId ? (
                       <iframe
                         src={`https://www.youtube-nocookie.com/embed/${videoId}`}
@@ -447,18 +447,18 @@ export default async function GuestBioPage({ params }: Props) {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-white/20 text-xs tracking-widest uppercase">No video available</span>
+                        <span className="text-white/55 text-xs tracking-widest uppercase">No video available</span>
                       </div>
                     )}
                   </div>
 
                   {/* Right: Episode info */}
                   <div>
-                    <p className="text-[#CC0000] text-[11px] font-bold tracking-[0.3em] uppercase mb-3">
+                    <p className="text-accent text-2xs font-bold tracking-label uppercase mb-3">
                       Now Playing
                     </p>
                     <h3
-                      className="font-[family-name:var(--font-bebas-neue)] text-white uppercase leading-none mb-4"
+                      className="font-display text-white uppercase leading-none mb-4"
                       style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', letterSpacing: '0.02em' }}
                     >
                       EP. {guest.episode.episodeNumber}: {guest.episode.title}
@@ -473,7 +473,7 @@ export default async function GuestBioPage({ params }: Props) {
                         href={ytUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 bg-[#CC0000] text-white text-xs font-bold tracking-[0.2em] uppercase px-6 py-3.5 hover:bg-[#AA0000] active:scale-95 transition-all"
+                        className="inline-flex items-center gap-3 bg-brand-red text-white text-xs font-bold tracking-label uppercase px-6 py-3.5 hover:bg-brand-red-hover active:scale-95 transition-all"
                       >
                         Watch Episode
                         <span className="w-5 h-5 rounded-full bg-white/25 flex items-center justify-center shrink-0">
@@ -493,7 +493,7 @@ export default async function GuestBioPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 border-t border-white/5">
           <Link
             href="/guests"
-            className="text-xs font-bold tracking-[0.2em] uppercase text-white/30 hover:text-white transition-colors"
+            className="text-xs font-bold tracking-label uppercase text-white/55 hover:text-white transition-colors"
           >
             ← Back to Guests
           </Link>

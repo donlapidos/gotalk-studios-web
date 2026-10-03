@@ -3,46 +3,35 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title:       "About GoTalk Studios | Kuching, Sarawak",
+  title:       "About",
   description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
   openGraph: {
-    title:       "About GoTalk Studios | Kuching, Sarawak",
+    title:       "About",
     description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
     url:         "https://gotalkstudios.com/about",
     type:        "website",
   },
   twitter: {
-    title:       "About GoTalk Studios | Kuching, Sarawak",
+    title:       "About",
     description: "Meet the team behind GoTalk Studios — Lionel Lapidos and Gordon Surein Raj — and the story behind Sarawak's premier talk show studio.",
   },
 };
 import {
   FadeUp,
-  FadeIn,
-  StaggerList,
-  StaggerItem,
   ScaleIn,
-  DrawLine,
   LineRevealScroll,
+  ClipReveal,
 } from "@/components/motion";
 
 function StudioStory() {
   return (
-    <section className="py-24 bg-[#111111]">
+    <section className="py-24 bg-surface-base">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Text */}
           <div>
-            <FadeIn>
-              <div className="flex items-center gap-3 mb-6">
-                <DrawLine className="w-8 h-px bg-[#CC0000]" />
-                <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                  Our Story
-                </span>
-              </div>
-            </FadeIn>
             <LineRevealScroll>
-              <h2 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-6xl text-white tracking-wide mb-8 leading-tight">
+              <h2 className="font-display text-5xl lg:text-6xl text-white tracking-wide mb-8 leading-tight">
                 Born in Kuching.<br />Built for Sarawak.
               </h2>
             </LineRevealScroll>
@@ -55,9 +44,9 @@ function StudioStory() {
             </FadeUp>
             <FadeUp delay={0.2}>
               <div className="mt-8 pt-8 border-t border-white/10">
-                <p className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-widest">
+                <p className="font-display text-2xl text-white tracking-widest">
                   Real People.{" "}
-                  <span className="text-[#CC0000]">Real Stories.</span> Real Sarawak.
+                  <span className="text-brand-red">Real Stories.</span> Real Sarawak.
                 </p>
               </div>
             </FadeUp>
@@ -67,7 +56,7 @@ function StudioStory() {
           <div className="space-y-5">
             <ScaleIn>
               {/* Studio image */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] mb-5">
+              <div className="relative aspect-[4/3] overflow-hidden bg-surface-raised mb-5">
                 <Image
                   src="/kuching.jpg"
                   alt="Kuching, Sarawak"
@@ -77,7 +66,7 @@ function StudioStory() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111]/60 to-transparent" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                  <span className="w-4 h-px bg-[#CC0000]" />
+                  <span className="w-4 h-px bg-brand-red" />
                   <span className="text-xs text-white/60 uppercase tracking-widest">
                     Kuching, Sarawak, Malaysia
                   </span>
@@ -86,11 +75,11 @@ function StudioStory() {
             </ScaleIn>
 
             <FadeUp delay={0.15}>
-              <div className="border border-white/10 bg-[#161616] p-8">
-                <p className="text-[10px] text-[#CC0000] font-bold tracking-[0.3em] uppercase mb-4">
+              <div className="border border-white/10 bg-surface-alt p-8">
+                <p className="text-2xs text-accent font-bold tracking-label uppercase mb-4">
                   Our Mission
                 </p>
-                <p className="font-[family-name:var(--font-bebas-neue)] text-3xl text-white leading-tight tracking-wide">
+                <p className="font-display text-3xl text-white leading-tight tracking-wide">
                   To be the definitive voice of Sarawak — one honest conversation at a time.
                 </p>
               </div>
@@ -119,54 +108,58 @@ function Hosts() {
   ];
 
   return (
-    <section className="py-24 bg-[#161616]">
+    <section className="py-24 bg-surface-alt">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <FadeUp>
           <div className="mb-14">
-            <div className="flex items-center gap-3 mb-4">
-              <DrawLine className="w-8 h-px bg-[#CC0000]" />
-              <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                The Hosts
-              </span>
+            <div className="section-head mb-5">
+              <span className="section-label">The Founders</span>
+              <span aria-hidden="true" className="section-head__rule" />
             </div>
-            <h2 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-6xl text-white tracking-wide">
+            <h2 className="font-display text-5xl lg:text-6xl text-white tracking-wide leading-[0.9]">
               Meet the Hosts
             </h2>
           </div>
         </FadeUp>
 
-        <StaggerList className="grid md:grid-cols-2 gap-4">
-          {hosts.map((host) => (
-            <StaggerItem key={host.name} className="h-full">
-              <div className="group bg-[#111111] border border-white/8 hover:border-[#CC0000]/30 transition-colors overflow-hidden h-full flex flex-col">
-                {/* Image area */}
-                <div className="relative h-80 bg-[#1A1A1A] overflow-hidden">
+        {/* Plain grid: ClipReveal self-manages its own reveal, so wrapping these in
+            a stagger container would set up variants nothing consumes. */}
+        <div className="grid md:grid-cols-2 gap-4">
+          {/* Full colour. These were keyed through a red duotone to hide that the
+              two portraits come from different shoots; the tint read as a filter
+              over the people instead. Replace both with one shoot on the set. */}
+          {hosts.map((host, i) => (
+            <ClipReveal key={host.name} delay={i * 0.14} className="h-full">
+              <article className="group flex flex-col h-full bg-surface-raised border border-white/10 overflow-hidden">
+                {/* 3:2 rather than 4:5: at portrait ratio the pair ran taller than
+                    a viewport, and the extra height was all light area. */}
+                <div className="relative aspect-[3/2] bg-surface-raised overflow-hidden shrink-0">
                   <Image
                     src={host.photo}
-                    alt={host.name}
+                    alt={`${host.name}, ${host.role} at GoTalk Studios`}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    style={{ objectPosition: "50% 15%" }}
+                    className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
+                    style={{ objectPosition: "50% 18%" }}
                     sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={i === 0}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/60 via-transparent to-transparent" />
-                  {/* Gradient bar at bottom */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#CC0000] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 </div>
 
-                <div className="p-8 flex-1">
-                  <h3 className="font-[family-name:var(--font-bebas-neue)] text-3xl text-white tracking-wide mb-1">
+                <div className="flex-1 px-6 pt-5 pb-6 flex flex-col">
+                  <h3 className="font-display text-3xl text-white tracking-wide leading-[0.95] mb-1">
                     {host.name}
                   </h3>
-                  <p className="text-xs text-[#CC0000] font-bold uppercase tracking-[0.2em] mb-5">
+                  <p className="text-2xs text-white/55 font-bold uppercase tracking-label mb-4">
                     {host.role}
                   </p>
-                  <p className="text-sm text-white/65 leading-relaxed">{host.bio}</p>
+                  <p className="text-sm text-white/70 leading-relaxed max-w-[56ch]">
+                    {host.bio}
+                  </p>
                 </div>
-              </div>
-            </StaggerItem>
+              </article>
+            </ClipReveal>
           ))}
-        </StaggerList>
+        </div>
       </div>
     </section>
   );
@@ -174,11 +167,11 @@ function Hosts() {
 
 function AboutCTA() {
   return (
-    <section className="py-20 bg-[#111111] border-t border-white/10">
+    <section className="py-20 bg-surface-base border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8">
         <FadeUp>
           <div>
-            <h3 className="font-[family-name:var(--font-bebas-neue)] text-4xl text-white tracking-wide mb-2">
+            <h3 className="font-display text-4xl text-white tracking-wide mb-2">
               Want to Be Part of the Story?
             </h3>
             <p className="text-white/65 text-sm">
@@ -190,13 +183,13 @@ function AboutCTA() {
           <div className="flex flex-wrap gap-4 flex-shrink-0">
             <Link
               href="/contact"
-              className="bg-[#CC0000] text-white text-xs font-bold tracking-[0.15em] uppercase px-7 py-4 hover:bg-[#AA0000] active:scale-95 transition-all"
+              className="bg-brand-red text-white text-xs font-bold tracking-wide uppercase px-7 py-4 hover:bg-brand-red-hover active:scale-95 transition-all"
             >
               APPLY TO BE A GUEST
             </Link>
             <Link
               href="/episodes"
-              className="border border-white/30 text-white text-xs font-bold tracking-[0.15em] uppercase px-7 py-4 hover:border-white hover:bg-white/5 transition-all"
+              className="border border-white/30 text-white text-xs font-bold tracking-wide uppercase px-7 py-4 hover:border-white hover:bg-white/5 transition-all"
             >
               WATCH EPISODES
             </Link>
@@ -210,21 +203,13 @@ function AboutCTA() {
 export default function AboutPage() {
   return (
     <>
-      <main className="pt-16">
-        <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden noise">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0D] to-[#111111]" />
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
+      <main id="main" tabIndex={-1} className="pt-16">
+        <div className="relative bg-surface-base border-b border-white/10 overflow-hidden noise">
+          <div className="absolute inset-0 bg-gradient-to-b from-surface-sunken to-surface-base" />
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red" />
           <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
-            <FadeIn delay={0.1}>
-              <div className="flex items-center gap-3 mb-5">
-                <DrawLine delay={0.2} className="w-8 h-px bg-[#CC0000]" />
-                <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                  About the Studio
-                </span>
-              </div>
-            </FadeIn>
             <LineRevealScroll>
-              <h1 className="font-[family-name:var(--font-bebas-neue)] text-6xl lg:text-8xl text-white tracking-wide">
+              <h1 className="font-display text-6xl lg:text-8xl text-white tracking-wide">
                 We Are GoTalk.
               </h1>
             </LineRevealScroll>

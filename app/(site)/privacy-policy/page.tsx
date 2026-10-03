@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:       "Privacy Policy | GoTalk Studios",
+  title:       "Privacy Policy",
   description: "How GoTalk Studios collects, uses, and protects your personal information.",
   openGraph: {
-    title:       "Privacy Policy | GoTalk Studios",
+    title:       "Privacy Policy",
     description: "How GoTalk Studios collects, uses, and protects your personal information.",
     url:         "https://gotalkstudios.com/privacy-policy",
     type:        "website",
   },
   twitter: {
-    title:       "Privacy Policy | GoTalk Studios",
+    title:       "Privacy Policy",
     description: "How GoTalk Studios collects, uses, and protects your personal information.",
   },
 };
@@ -103,22 +103,16 @@ By using our website, you consent to the practices described in this Privacy Pol
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <main className="pt-16 bg-[#111111] min-h-screen">
+      <main id="main" tabIndex={-1} className="pt-16 bg-surface-base min-h-screen">
 
         {/* Page Header */}
-        <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
+        <div className="relative bg-surface-base border-b border-white/10 overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red" />
           <div className="max-w-3xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-8 h-px bg-[#CC0000]" />
-              <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                Legal
-              </span>
-            </div>
-            <h1 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-7xl text-white tracking-wide mb-4">
+            <h1 className="font-display text-5xl lg:text-7xl text-white tracking-wide mb-4">
               Privacy Policy
             </h1>
-            <p className="text-white/40 text-sm tracking-widest uppercase">
+            <p className="text-white/55 text-sm tracking-widest uppercase">
               Effective Date: 7 April 2025
             </p>
           </div>
@@ -133,7 +127,7 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-12">
             {sections.map((section) => (
               <div key={section.title}>
-                <h2 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-[#CC0000] tracking-wide mb-4">
+                <h2 className="font-display text-2xl text-brand-red tracking-wide mb-4">
                   {section.title}
                 </h2>
                 {section.body && (
@@ -145,7 +139,7 @@ export default function PrivacyPolicyPage() {
                   <ul className="space-y-2 mb-4">
                     {section.bullets.map((bullet, i) => (
                       <li key={i} className="flex items-start gap-3 text-white/70 text-sm leading-relaxed">
-                        <span className="w-1 h-1 rounded-full bg-[#CC0000] mt-2 flex-shrink-0" />
+                        <span className="w-1 h-1 rounded-full bg-brand-red mt-2 flex-shrink-0" />
                         {bullet}
                       </li>
                     ))}
@@ -159,7 +153,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div className="mt-16 pt-8 border-t border-white/10">
-            <p className="text-xs text-white/30 tracking-widest uppercase">Last updated: 7 April 2025</p>
+            <p className="text-xs text-white/55 tracking-widest uppercase">Last updated: 7 April 2025</p>
           </div>
         </div>
 

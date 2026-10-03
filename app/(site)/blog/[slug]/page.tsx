@@ -64,10 +64,10 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
-      <main className="pt-16 bg-[#111111] min-h-screen">
+      <main id="main" tabIndex={-1} className="pt-16 bg-surface-base min-h-screen">
 
         {/* Hero */}
-        <div className="relative bg-[#111111] border-b border-white/10 overflow-hidden">
+        <div className="relative bg-surface-base border-b border-white/10 overflow-hidden">
           {post.featuredImage?.asset && (
             <div className="absolute inset-0">
               <SanityImage
@@ -79,17 +79,17 @@ export default async function BlogPostPage({ params }: Props) {
                 sizes="100vw"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#111111]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface-base" />
             </div>
           )}
           <div className="relative z-10 max-w-3xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
             <FadeIn delay={0.1}>
               <div className="flex items-center gap-3 mb-5">
-                <span className={`text-[10px] font-bold tracking-[0.25em] uppercase border px-2.5 py-1 ${colorClass}`}>
+                <span className={`text-2xs font-bold tracking-label uppercase border px-2.5 py-1 ${colorClass}`}>
                   {post.category}
                 </span>
                 {post.publishedAt && (
-                  <span className="text-[10px] text-white/25 uppercase tracking-widest">
+                  <span className="text-2xs text-white/55 uppercase tracking-widest">
                     {new Date(post.publishedAt).toLocaleDateString("en-MY", {
                       year: "numeric", month: "long", day: "numeric",
                     })}
@@ -98,7 +98,7 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             </FadeIn>
             <FadeUp delay={0.2}>
-              <h1 className="font-[family-name:var(--font-bebas-neue)] text-4xl lg:text-6xl text-white tracking-wide leading-tight mb-5">
+              <h1 className="font-display text-4xl lg:text-6xl text-white tracking-wide leading-tight mb-5">
                 {post.title}
               </h1>
             </FadeUp>
@@ -109,7 +109,7 @@ export default async function BlogPostPage({ params }: Props) {
             )}
             {post.author && (
               <FadeUp delay={0.4}>
-                <p className="text-xs text-white/30 tracking-widest uppercase mt-6">
+                <p className="text-xs text-white/55 tracking-widest uppercase mt-6">
                   By {post.author}
                 </p>
               </FadeUp>
@@ -131,7 +131,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="mt-16 pt-8 border-t border-white/10">
             <Link
               href="/blog"
-              className="text-xs font-bold tracking-[0.2em] uppercase text-[#CC0000] hover:text-white transition-colors"
+              className="text-xs font-bold tracking-label uppercase text-accent hover:text-white transition-colors"
             >
               ← Back to Blog
             </Link>

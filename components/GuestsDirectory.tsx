@@ -66,12 +66,12 @@ function GuestCard({ guest }: { guest: GuestItem }) {
       animate="rest"
       variants={cardVariants}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="relative border border-[#222]"
+      className="relative border border-surface-overlay"
     >
       <Link href={`/guests/${guest.slug.current}`} className="block">
 
         {/* Photo — 3:4 portrait */}
-        <div className="relative overflow-hidden bg-[#1a1a1a]" style={{ aspectRatio: '3 / 4' }}>
+        <div className="relative overflow-hidden bg-surface-raised" style={{ aspectRatio: '3 / 4' }}>
           {guest.photo?.asset ? (
             <motion.div
               variants={photoVariants}
@@ -105,14 +105,14 @@ function GuestCard({ guest }: { guest: GuestItem }) {
         </div>
 
         {/* Info bar — name + company only */}
-        <div className="bg-[#F0F0EE] px-4 pt-4 pb-5">
+        <div className="bg-surface-light px-4 pt-4 pb-5">
           <h3
-            className="font-[family-name:var(--font-bebas-neue)] text-[#111111] leading-[1.0] break-words"
+            className="font-display text-surface-base leading-[1.0] break-words"
             style={{ fontSize: 'clamp(1.45rem, 2.5vw, 1.9rem)', letterSpacing: '0.03em' }}
           >
             {guest.name.toUpperCase()}
           </h3>
-          <p className="text-[10px] text-gray-400 mt-1 tracking-widest uppercase leading-relaxed">
+          <p className="text-2xs text-ink-muted mt-1 tracking-widest uppercase leading-relaxed">
             {guest.company || guest.title || ' '}
           </p>
         </div>
@@ -148,15 +148,15 @@ export default function GuestsDirectory({ guests }: { guests: GuestItem[] }) {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`relative text-[11px] font-bold tracking-[0.2em] uppercase pb-2.5 transition-colors ${
-                activeTab === tab ? 'text-white' : 'text-white/35 hover:text-white/70'
+              className={`relative inline-flex items-center min-h-[44px] text-2xs font-bold tracking-label uppercase transition-colors ${
+                activeTab === tab ? 'text-white' : 'text-white/70 hover:text-white'
               }`}
             >
               {tab}
               {activeTab === tab && (
                 <motion.span
                   layoutId="tab-underline"
-                  className="absolute bottom-0 left-0 w-full h-[2px] bg-[#CC0000]"
+                  className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-red"
                   transition={{ duration: 0.25 }}
                 />
               )}
@@ -166,15 +166,19 @@ export default function GuestsDirectory({ guests }: { guests: GuestItem[] }) {
 
         {/* Search input */}
         <div className="relative">
+          <label htmlFor="guest-search" className="sr-only">
+            Search guests by name, company, or focus
+          </label>
           <input
-            type="text"
+            id="guest-search"
+            type="search"
             placeholder="SEARCH GUESTS..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[11px] tracking-[0.12em] uppercase placeholder:text-white/20 px-4 py-2.5 pr-9 focus:outline-none focus:border-white/20 w-52"
+            className="bg-surface-raised border border-white/10 text-white text-2xs tracking-wide uppercase placeholder:text-white/55 px-4 py-2.5 pr-9 min-h-[44px] focus:border-white/20 w-52"
           />
           <svg
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/55"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -203,8 +207,27 @@ export default function GuestsDirectory({ guests }: { guests: GuestItem[] }) {
             <GuestCard key={g._id} guest={g} />
           ))}
           {filtered.length === 0 && (
-            <div className="col-span-full py-24 text-center">
-              <p className="text-white/20 text-sm tracking-[0.3em] uppercase">No guests found</p>
+            /* Was a dead end: low-contrast text centred in a 300px void, with no
+               way to clear the search or reset the tab. */
+            <div className="col-span-full py-20 text-center">
+              <p className="font-display text-3xl text-white tracking-wide mb-3">
+                No guests match that.
+              </p>
+              <p className="text-sm text-white/70 mb-7 max-w-[42ch] mx-auto">
+                {search
+                  ? `Nothing found for “${search}”${activeTab !== 'All Shows' ? ` in ${activeTab}` : ''}.`
+                  : `No guests in ${activeTab} yet.`}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch('')
+                  setActiveTab('All Shows')
+                }}
+                className="inline-flex items-center justify-center bg-brand-red text-white text-2xs font-bold tracking-label uppercase px-6 py-3.5 min-h-[44px] hover:bg-brand-red-hover transition-colors"
+              >
+                Show all guests
+              </button>
             </div>
           )}
         </motion.div>

@@ -63,6 +63,7 @@ export const guest = defineType({
           { title: 'Business', value: 'Business' },
           { title: 'Politics', value: 'Politics' },
           { title: 'Icons', value: 'Icons' },
+          { title: 'Voices', value: 'Voices' },
         ],
         layout: 'radio',
       },

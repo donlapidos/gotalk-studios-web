@@ -19,7 +19,7 @@ const marks = {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[#CC0000] underline hover:text-white transition-colors"
+        className="text-accent underline hover:text-white transition-colors"
       >
         {children}
       </a>
@@ -33,17 +33,17 @@ export const blogPtComponents = {
       <p className="mb-5 text-white/75 leading-relaxed">{children}</p>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="font-[family-name:var(--font-bebas-neue)] text-3xl text-white tracking-wide mt-10 mb-4">
+      <h2 className="font-display text-3xl text-white tracking-wide mt-10 mb-4">
         {children}
       </h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-wide mt-8 mb-3">
+      <h3 className="font-display text-2xl text-white tracking-wide mt-8 mb-3">
         {children}
       </h3>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="border-l-2 border-[#CC0000] pl-5 my-6 text-white/60 italic">
+      <blockquote className="border-l-2 border-brand-red pl-5 my-6 text-white/60 italic">
         {children}
       </blockquote>
     ),
@@ -64,7 +64,7 @@ export const blogPtComponents = {
             />
           </div>
           {value.caption && (
-            <figcaption className="text-center text-xs text-white/35 mt-2 tracking-wide">
+            <figcaption className="text-center text-xs text-white/55 mt-2 tracking-wide">
               {value.caption}
             </figcaption>
           )}
@@ -80,12 +80,12 @@ export const guestPtComponents = {
       <p className="mb-5 text-white/70 leading-relaxed text-sm">{children}</p>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-wide mt-8 mb-3">
+      <h2 className="font-display text-2xl text-white tracking-wide mt-8 mb-3">
         {children}
       </h2>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="border-l-2 border-[#CC0000] pl-5 my-6 text-white/55 italic text-sm">
+      <blockquote className="border-l-2 border-brand-red pl-5 my-6 text-white/55 italic text-sm">
         {children}
       </blockquote>
     ),

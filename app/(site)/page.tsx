@@ -3,12 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
 import { sanityFetch } from "@/sanity/lib/live";
-import { FEATURED_EPISODE_QUERY } from "@/sanity/lib/queries";
-import { imageUrl, type SanityImageValue } from "@/sanity/lib/image";
-import { extractYouTubeId } from "@/lib/youtube";
+import { GUEST_COUNT_QUERY } from "@/sanity/lib/queries";
+import { getEpisodes, countGuests, type Episode } from "@/lib/episodes";
+import { SHOWS, showByKey, type Show } from "@/lib/shows";
+import { isFresh, metaLine } from "@/components/EpisodeCard";
 
 export const metadata: Metadata = {
-  title: "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
+  title: { absolute: "GoTalk Studios | Real People. Real Stories. Real Sarawak." },
   description: "GoTalk Studios is Sarawak's home for honest conversations with entrepreneurs, leaders, and icons. Watch on YouTube.",
   openGraph: {
     title:       "GoTalk Studios | Real People. Real Stories. Real Sarawak.",
@@ -29,23 +30,24 @@ import {
   StaggerList,
   StaggerItem,
   ScaleIn,
-  DrawLine,
+  ClipReveal,
+  BlurUp,
 } from "@/components/motion";
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-end bg-[#111111] overflow-hidden noise">
+    <section className="relative min-h-screen flex flex-col justify-end bg-surface-base overflow-hidden noise">
       {/* Background gradient */}
-      <div className="absolute inset-0 z-0 bg-[#0D0D0D]" />
+      <div className="absolute inset-0 z-0 bg-surface-sunken" />
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#111111]/70 via-[#111111]/40 to-[#111111]" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-surface-base/70 via-surface-base/40 to-surface-base" />
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_80%_60%_at_70%_30%,#CC000018_0%,transparent_70%)]" />
 
       {/* Left red accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000] z-10" />
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red z-10" />
 
       {/* Grid */}
       <div
@@ -59,51 +61,45 @@ function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pb-24 pt-40">
-        {/* Pre-headline */}
-        <FadeIn delay={0.2}>
-          <div className="flex items-center gap-3 mb-6">
-            <DrawLine delay={0.3} className="w-8 h-px bg-[#CC0000]" />
-            <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-              Sarawak&apos;s Premier Talk Show Studio
-            </span>
-          </div>
-        </FadeIn>
+        {/* The eyebrow that used to sit here ("Sarawak's Premier Talk Show
+            Studio") is gone: the headline carries its own weight, and at 0.3em
+            tracking the label wrapped mid-phrase on mobile and read as broken. */}
 
-        {/* Main headline — line-by-line reveal */}
-        <div className="font-[family-name:var(--font-bebas-neue)] text-[clamp(4rem,12vw,10rem)] leading-[0.93] tracking-wide text-white mb-8">
-          <LineReveal delay={0.35}>Real People.</LineReveal>
-          <LineReveal delay={0.5}>
-            Real <span className="text-[#CC0000]">Stories.</span>
+        {/* Main headline — line-by-line reveal. This is an <h1> now; the page's
+            front door previously opened on an <h2>, with no h1 anywhere. */}
+        <h1 className="font-display text-[clamp(4rem,12vw,9rem)] leading-[0.93] tracking-wide text-white mb-8">
+          <LineReveal delay={0.15}>Real People.</LineReveal>
+          <LineReveal delay={0.3}>
+            Real <span className="text-brand-red">Stories.</span>
           </LineReveal>
-          <LineReveal delay={0.65}>Real Sarawak.</LineReveal>
-        </div>
+          <LineReveal delay={0.45}>Real Sarawak.</LineReveal>
+        </h1>
 
         {/* Subheadline */}
-        <FadeIn delay={0.85}>
-          <p className="max-w-xl text-base text-white/70 leading-relaxed mb-10">
+        <FadeIn delay={0.65}>
+          <p className="max-w-[62ch] text-lg text-white/70 leading-relaxed mb-10">
             GoTalk Studios is Sarawak&apos;s home for honest conversations —
             with the entrepreneurs building tomorrow, the leaders shaping today,
-            and the icons defining our culture.
+            the icons defining our culture, and the everyday Sarawakians whose
+            stories deserve a hearing.
           </p>
         </FadeIn>
 
-        {/* CTAs */}
-        <FadeUp delay={1.0}>
-          <div className="flex flex-wrap items-center gap-4">
+        {/* CTAs — equal width when stacked, so the vertical stack doesn't rag. */}
+        <FadeUp delay={0.8}>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 max-w-md sm:max-w-none">
             <Link
-              href="/episodes"
-              className="group inline-flex items-center gap-3 bg-[#CC0000] text-white text-sm font-bold tracking-[0.15em] uppercase px-7 py-4 hover:bg-[#AA0000] active:scale-95 transition-all"
+              href="#latest"
+              className="group inline-flex items-center justify-center gap-3 bg-brand-red text-white text-sm font-bold tracking-wide uppercase px-7 py-4 min-h-[52px] hover:bg-brand-red-hover active:scale-95 transition-all"
             >
-              WATCH LATEST EPISODE
-              <span className="group-hover:translate-x-1 transition-transform inline-block">
-                →
-              </span>
+              Watch Latest Episode
+              <Arrow />
             </Link>
             <Link
-              href="/episodes"
-              className="inline-flex items-center gap-2 border border-white/25 text-white text-sm font-semibold tracking-[0.15em] uppercase px-7 py-4 hover:border-white hover:bg-white/5 active:scale-95 transition-all"
+              href="/contact#book"
+              className="inline-flex items-center justify-center gap-2 border border-white/25 text-white text-sm font-semibold tracking-wide uppercase px-7 py-4 min-h-[52px] hover:border-white hover:bg-white/5 active:scale-95 transition-all"
             >
-              EXPLORE ALL SHOWS
+              Book the Studio
             </Link>
           </div>
         </FadeUp>
@@ -113,211 +109,245 @@ function HeroSection() {
   );
 }
 
-// ─── Stats Bar ────────────────────────────────────────────────────────────────
+// ─── On the Record ─────────────────────────────────────────────────────────────
+//
+// Replaces two sections. The red figures band ("27 Episodes / 25 Guests / 3 Show
+// Segments") put three cold counts straight after a promise about people, and it
+// only moved when someone hand-entered an episode in Sanity. The "Latest Episode"
+// block below it depended on a manual "featured" flag. Both now come from the
+// YouTube feeds: upload an episode and it leads this section within the hour.
+// The counts survive as one caption line, where they inform instead of perform.
 
-function StatsBar() {
-  return (
-    <div className="border-t border-b border-white/10 bg-[#161616]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <StaggerList className="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-white/10">
-          {[
-            { value: "20+", label: "Episodes Recorded" },
-            { value: "Kuching", label: "Broadcast from Sarawak" },
-            { value: "3", label: "Show Segments" },
-            { value: "Unscripted", label: "Always" },
-          ].map((stat) => (
-            <StaggerItem key={stat.label} className="flex-1">
-              <div className="flex flex-col items-center justify-center py-7 px-4 text-center h-full">
-                <span className="font-[family-name:var(--font-bebas-neue)] text-3xl lg:text-4xl text-[#CC0000] tracking-wider">
-                  {stat.value}
-                </span>
-                <span className="text-[10px] text-white/35 uppercase tracking-[0.25em] mt-1">
-                  {stat.label}
-                </span>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerList>
+function RecordRow({ ep }: { ep: Episode }) {
+  const isVoices = showByKey(ep.show)?.kind === "stories";
+  const inner = (
+    <>
+      <div className="relative aspect-video overflow-hidden bg-surface-raised">
+        {ep.thumbnail && (
+          <Image
+            src={ep.thumbnail}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+            sizes="(max-width: 640px) 40vw, 12rem"
+          />
+        )}
       </div>
+      <div className="min-w-0">
+        <p className="text-2xs text-white/55 uppercase tracking-label mb-1.5 tabular-nums">
+          {metaLine(ep, { withShow: true })}
+        </p>
+        <p className="font-display text-xl sm:text-2xl text-white leading-[1.02] tracking-wide line-clamp-2 group-hover:text-accent transition-colors">
+          {isVoices && ep.guest ? ep.guest : ep.title}
+        </p>
+        <p className="text-xs text-white/70 mt-1 line-clamp-1">
+          {isVoices ? <>&ldquo;{ep.title}&rdquo;</> : ep.guest}
+        </p>
+      </div>
+    </>
+  );
+  const cls = "group grid grid-cols-[minmax(0,8.5rem)_1fr] sm:grid-cols-[minmax(0,12rem)_1fr] gap-4 items-start py-5";
+  return ep.url ? (
+    <a href={ep.url} target="_blank" rel="noopener noreferrer" className={cls}>
+      {inner}
+    </a>
+  ) : (
+    <div className={cls}>{inner}</div>
+  );
+}
+
+function OnTheRecord({
+  episodes,
+  guestCount,
+}: {
+  episodes: Episode[];
+  guestCount: number;
+}) {
+  const [lead, ...rest] = episodes;
+  if (!lead) return null;
+
+  const show = showByKey(lead.show);
+  const isVoices = show?.kind === "stories";
+  const fresh = isFresh(lead.publishedAt);
+  const facts = [
+    `${episodes.length} episodes`,
+    guestCount > 0 ? `${guestCount} guests` : null,
+    `${SHOWS.length} shows`,
+  ].filter(Boolean).join(" · ");
+
+  return (
+    <section id="latest" className="section-y-tight bg-surface-alt scroll-mt-16" aria-labelledby="latest-heading">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4 mb-10 lg:mb-12">
+          <BlurUp>
+            <h2 id="latest-heading" className="font-display text-white text-5xl lg:text-6xl tracking-wide leading-[0.9]">
+              On the <span className="text-brand-red">Record</span>
+            </h2>
+          </BlurUp>
+          <FadeIn delay={0.15}>
+            <p className="text-sm text-white/70 tabular-nums">
+              {facts} ·{" "}
+              <Link
+                href="/episodes"
+                className="text-white font-semibold underline underline-offset-4 decoration-brand-red decoration-2 hover:text-accent transition-colors"
+              >
+                See them all
+              </Link>
+            </p>
+          </FadeIn>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12">
+          {/* Lead: the newest upload, playable in place */}
+          <div className="lg:col-span-7">
+            <ScaleIn>
+              <YouTubeEmbed
+                videoId={lead.videoId ?? ""}
+                title={lead.title}
+                thumbnail={lead.videoId ? undefined : lead.thumbnail ?? undefined}
+                badge={fresh ? "New" : show?.name}
+              />
+            </ScaleIn>
+            <FadeUp delay={0.1}>
+              <p className="text-2xs font-bold tracking-label uppercase text-accent mt-6 mb-3 tabular-nums">
+                {metaLine(lead, { withShow: true })}
+              </p>
+              <h3 className="font-display text-4xl lg:text-5xl text-white leading-[0.95] tracking-wide mb-3 text-balance">
+                {isVoices && lead.guest ? lead.guest : lead.title}
+              </h3>
+              <p className="text-sm text-white/60 mb-4">
+                {isVoices
+                  ? <>&ldquo;{lead.title}&rdquo;</>
+                  : [lead.guest, lead.guestDetail].filter(Boolean).join(" · ")}
+              </p>
+              {lead.description && (
+                <p className="text-white/70 leading-relaxed text-base max-w-[64ch] line-clamp-3">
+                  {lead.description}
+                </p>
+              )}
+            </FadeUp>
+          </div>
+
+          {/* The next four, newest first */}
+          {rest.length > 0 && (
+            <div className="lg:col-span-5">
+              <p className="text-2xs font-bold tracking-label uppercase text-white/55 pb-3 border-b border-white/10">
+                Also new
+              </p>
+              <StaggerList className="divide-y divide-white/10">
+                {rest.slice(0, 4).map((ep) => (
+                  <StaggerItem key={ep.id}>
+                    <RecordRow ep={ep} />
+                  </StaggerItem>
+                ))}
+              </StaggerList>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── The Shows ────────────────────────────────────────────────────────────────
+//
+// Four identical dark cards, one per show, each with its general studio art (not
+// a specific episode). The earlier version stacked cream plates, red seams and
+// solid red action bars, which put white, red and black at full strength in the
+// same square inch; red is now spent only on the hover state.
+
+function Arrow() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true">
+      <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="square" />
+    </svg>
+  );
+}
+
+/** Stand-in art for a show without a render yet: the same black set, neon rules and spotlight. */
+function StudioArt() {
+  return (
+    <div aria-hidden="true" className="absolute inset-0 bg-[#050505] overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 22% 75% at 50% 0%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 55%, transparent 80%)," +
+            "radial-gradient(ellipse 30% 9% at 50% 82%, rgba(255,255,255,0.22) 0%, transparent 100%)," +
+            "radial-gradient(ellipse 90% 30% at 50% 110%, rgba(204,0,0,0.35) 0%, transparent 70%)",
+        }}
+      />
+      {[
+        ["0%", "28%", "24%"], ["0%", "36%", "38%"], ["0%", "46%", "30%"],
+        ["66%", "31%", "34%"], ["74%", "41%", "26%"], ["70%", "51%", "30%"],
+      ].map(([left, top, width]) => (
+        <span
+          key={left + top}
+          className="absolute h-[2px] bg-[#ff5a5a] shadow-[0_0_8px_rgba(255,60,60,0.8)]"
+          style={{ left, top, width }}
+        />
+      ))}
     </div>
   );
 }
 
-// ─── Featured Episode ─────────────────────────────────────────────────────────
-
-type FeaturedEp = {
-  _id: string
-  title: string
-  episodeNumber: number
-  segment: string
-  guestName: string
-  guestCompany: string | null
-  youtubeUrl: string | null
-  thumbnail: SanityImageValue | null
-  description: string | null
-} | null
-
-function FeaturedEpisode({ episode }: { episode: FeaturedEp }) {
-  if (!episode) return null;
-
-  const videoId = extractYouTubeId(episode.youtubeUrl);
-  const ytUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : null;
-  const guest = [episode.guestName, episode.guestCompany].filter(Boolean).join(' — ');
-  // Editor-uploaded override; falls back to the YouTube auto-thumbnail
-  const customThumb = imageUrl(episode.thumbnail, 1280, 720) ?? undefined;
-
-  return (
-    <section className="py-24 bg-[#111111]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <FadeUp>
-          <div className="flex items-center gap-3 mb-14">
-            <DrawLine className="w-8 h-px bg-[#CC0000]" />
-            <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-              Latest Episode
-            </span>
-          </div>
-        </FadeUp>
-
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Embed */}
-          <ScaleIn>
-            <YouTubeEmbed
-              videoId={videoId}
-              title={episode.title}
-              thumbnail={customThumb}
-              badge={`EP ${episode.episodeNumber}`}
-            />
-          </ScaleIn>
-
-          {/* Info */}
-          <div>
-            <FadeUp delay={0.1}>
-              <p className="text-[10px] text-white/35 uppercase tracking-[0.3em] mb-2">
-                GoTalk {episode.segment}
-              </p>
-            </FadeUp>
-            <LineRevealScroll delay={0.15}>
-              <h2 className="font-[family-name:var(--font-bebas-neue)] text-4xl lg:text-[3.25rem] text-white leading-tight mb-4 tracking-wide">
-                {episode.title}
-              </h2>
-            </LineRevealScroll>
-            <FadeUp delay={0.2}>
-              <p className="text-sm text-[#CC0000] font-semibold mb-5 uppercase tracking-widest">
-                {guest}
-              </p>
-            </FadeUp>
-            {episode.description && (
-              <FadeUp delay={0.25}>
-                <p className="text-white/65 leading-relaxed mb-8 text-sm">
-                  {episode.description}
-                </p>
-              </FadeUp>
-            )}
-            {ytUrl && (
-              <FadeUp delay={0.3}>
-                <a
-                  href={ytUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 text-white font-bold tracking-[0.15em] uppercase text-sm border-b-2 border-[#CC0000] pb-1 hover:text-[#CC0000] transition-colors"
-                >
-                  WATCH ON YOUTUBE
-                  <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-                </a>
-              </FadeUp>
-            )}
-          </div>
-        </div>
+function ShowCard({ show, count }: { show: Show; count: number }) {
+  const label =
+    count > 0
+      ? `${count} ${show.kind === "stories" ? (count === 1 ? "story" : "stories") : count === 1 ? "episode" : "episodes"}`
+      : "Coming soon";
+  const inner = (
+    <>
+      <div className="relative aspect-[4/3] overflow-hidden">
+        {show.art ? (
+          <Image
+            src={show.art}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
+        ) : (
+          <StudioArt />
+        )}
       </div>
-    </section>
+      <div className="flex-1 flex flex-col px-5 pt-5 pb-5">
+        <h3 className="font-display text-3xl text-white tracking-wide leading-none mb-2 transition-colors group-hover:text-accent">
+          {show.name}
+        </h3>
+        <p className="text-sm text-white/60 leading-relaxed mb-6">{show.premise}</p>
+        <span className="mt-auto flex items-center justify-between pt-4 border-t border-white/10 text-2xs font-bold tracking-label uppercase text-white/70 group-hover:text-white transition-colors tabular-nums">
+          {label}
+          {count > 0 && <Arrow />}
+        </span>
+      </div>
+    </>
+  );
+  const cls = "group flex flex-col h-full bg-surface-raised border border-white/10 hover:border-white/25 transition-colors overflow-hidden";
+  return count > 0 ? (
+    <Link href={`/episodes?category=${show.key}`} className={cls}>{inner}</Link>
+  ) : (
+    <div className={cls}>{inner}</div>
   );
 }
 
-// ─── Show Segments ────────────────────────────────────────────────────────────
-
-function ShowSegments() {
-  const segments = [
-    {
-      number: "01",
-      name: "GOTALK BUSINESS",
-      tagline:
-        "The entrepreneurs, founders, and risk-takers building Sarawak's future.",
-      href: "/episodes?category=business",
-      img: "/segment-business.png",
-    },
-    {
-      number: "02",
-      name: "GOTALK POLITICS",
-      tagline:
-        "The decision-makers and public servants, in their own words.",
-      href: "/episodes?category=politics",
-      img: "/segment-politics.png",
-    },
-    {
-      number: "03",
-      name: "GOTALK ICONS",
-      tagline:
-        "Sarawak's celebrated voices — artists, athletes, and cultural figures.",
-      href: "/episodes?category=icons",
-      img: "/segment-icons.png",
-    },
-  ];
-
+function TheShows({ episodes }: { episodes: Episode[] }) {
   return (
-    <section className="py-24 bg-[#161616]">
+    <section className="section-y bg-surface-base" aria-labelledby="shows-heading">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <FadeUp>
-          <div className="mb-14">
-            <div className="flex items-center gap-3 mb-4">
-              <DrawLine className="w-8 h-px bg-[#CC0000]" />
-              <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-                Our Shows
-              </span>
-            </div>
-            <h2 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-7xl text-white tracking-wide">
-              The Conversations
-            </h2>
-          </div>
-        </FadeUp>
+        <BlurUp>
+          <h2 id="shows-heading" className="font-display text-4xl sm:text-5xl lg:text-6xl text-white tracking-wide leading-[0.9] mb-12">
+            The <span className="text-brand-red">Shows</span>
+          </h2>
+        </BlurUp>
 
-        <StaggerList className="grid md:grid-cols-3 gap-4">
-          {segments.map((seg) => (
-            <StaggerItem key={seg.name}>
-              <Link href={seg.href} className="group relative overflow-hidden bg-[#111111] hover:bg-[#181818] transition-colors border border-white/8 hover:border-[#CC0000]/30 h-full block">
-                {/* Background image */}
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={seg.img}
-                    alt={seg.name}
-                    fill
-                    className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#111111]/40" />
-                  {/* Number watermark */}
-                  <span className="absolute top-4 right-4 font-[family-name:var(--font-bebas-neue)] text-6xl text-white/10 leading-none select-none">
-                    {seg.number}
-                  </span>
-                </div>
-
-                <div className="p-7">
-                  <span className="inline-block w-2.5 h-2.5 bg-[#CC0000] mb-4" />
-
-                  <h3 className="font-[family-name:var(--font-bebas-neue)] text-2xl text-white tracking-widest mb-3 leading-tight">
-                    {seg.name}
-                  </h3>
-                  <p className="text-sm text-white/60 leading-relaxed mb-6">
-                    {seg.tagline}
-                  </p>
-
-                  <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#CC0000] hover:text-white transition-colors group-hover:underline">
-                    VIEW EPISODES →
-                  </span>
-                </div>
-              </Link>
-            </StaggerItem>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {SHOWS.map((show, i) => (
+            <ClipReveal key={show.key} delay={i * 0.1} className="h-full">
+              <ShowCard show={show} count={episodes.filter((ep) => ep.show === show.key).length} />
+            </ClipReveal>
           ))}
-        </StaggerList>
+        </div>
       </div>
     </section>
   );
@@ -327,39 +357,35 @@ function ShowSegments() {
 
 function FooterCTA() {
   return (
-    <section className="relative py-28 lg:py-36 bg-[#111111] overflow-hidden">
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#CC0000]" />
+    <section className="relative section-y bg-surface-base overflow-hidden">
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-red" aria-hidden="true" />
 
-      {/* Background */}
-      <div className="absolute inset-0 bg-[#111111]" />
-
-      {/* Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none">
-        <span className="font-[family-name:var(--font-bebas-neue)] text-[22vw] text-white/[0.025] whitespace-nowrap leading-none tracking-widest">
+      {/* Wordmark watermark, restored — but anchored to the bottom edge and bled
+          off it rather than centred behind the headline, which is what made it
+          muddy the type. Red at 0.07 instead of white: it warms the whole panel
+          rather than greying it. */}
+      <div
+        className="absolute inset-x-0 bottom-0 flex justify-center overflow-hidden pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <span
+          className="font-display whitespace-nowrap leading-[0.75] tracking-widest text-brand-red/[0.07]"
+          style={{ fontSize: "24vw", transform: "translateY(34%)" }}
+        >
           GOTALK
         </span>
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
-        <FadeUp>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <DrawLine className="w-8 h-px bg-[#CC0000]" />
-            <span className="text-[#CC0000] text-xs font-bold tracking-[0.3em] uppercase">
-              Apply to Be a Guest
-            </span>
-            <DrawLine className="w-8 h-px bg-[#CC0000]" />
-          </div>
-        </FadeUp>
-
         <LineRevealScroll>
-          <h2 className="font-[family-name:var(--font-bebas-neue)] text-5xl lg:text-[5.5rem] text-white leading-tight tracking-wide mb-6">
+          <h2 className="font-display text-5xl lg:text-6xl text-white leading-tight tracking-wide mb-6">
             Your Story Belongs on{" "}
-            <span className="text-[#CC0000]">GoTalk.</span>
+            <span className="text-brand-red">GoTalk.</span>
           </h2>
         </LineRevealScroll>
 
         <FadeUp delay={0.2}>
-          <p className="text-white/65 text-lg max-w-lg mx-auto mb-10 leading-relaxed">
+          <p className="text-white/70 text-lg max-w-[55ch] mx-auto mb-10 leading-relaxed">
             Whether you&apos;re a founder, a leader, or a Sarawakian with a
             story worth hearing — the GoTalk chair is waiting.
           </p>
@@ -368,9 +394,9 @@ function FooterCTA() {
         <FadeUp delay={0.3}>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-3 bg-[#CC0000] text-white text-sm font-bold tracking-[0.2em] uppercase px-10 py-5 hover:bg-[#AA0000] active:scale-95 transition-all"
+            className="inline-flex items-center justify-center gap-3 bg-brand-red text-white text-sm font-bold tracking-label uppercase px-10 py-5 min-h-[52px] hover:bg-brand-red-hover active:scale-95 transition-all"
           >
-            APPLY TO BE A GUEST
+            Pitch Yourself as a Guest
           </Link>
         </FadeUp>
       </div>
@@ -381,15 +407,20 @@ function FooterCTA() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const { data: featuredEpisode } = await sanityFetch({ query: FEATURED_EPISODE_QUERY });
+  const [episodes, { data: sanityGuests }] = await Promise.all([
+    getEpisodes(),
+    sanityFetch({ query: GUEST_COUNT_QUERY }),
+  ]);
+  // Guests with a profile in Sanity, or named in an episode the feed brought in,
+  // whichever is higher: new uploads count before anyone writes a profile.
+  const guestCount = Math.max(sanityGuests ?? 0, countGuests(episodes));
 
   return (
     <>
-      <main>
+      <main id="main" tabIndex={-1}>
         <HeroSection />
-        <StatsBar />
-        <FeaturedEpisode episode={featuredEpisode} />
-        <ShowSegments />
+        <OnTheRecord episodes={episodes} guestCount={guestCount} />
+        <TheShows episodes={episodes} />
         <FooterCTA />
       </main>
     </>

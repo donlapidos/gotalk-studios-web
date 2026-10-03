@@ -51,7 +51,7 @@ export default function RootLayout({
       className={`${inter.variable} ${bebasNeue.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#111111] text-white">
+      <body className="min-h-full flex flex-col bg-surface-base text-white">
         {children}
         <Analytics />
         {gaId && <GoogleAnalytics gaId={gaId} />}

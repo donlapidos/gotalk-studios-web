@@ -1,23 +1,13 @@
 import { defineQuery } from 'next-sanity'
 
-export const FEATURED_EPISODE_QUERY = defineQuery(`
-  *[_type == "episode" && featured == true] | order(episodeNumber desc) [0] {
-    _id,
-    title,
-    episodeNumber,
-    season,
-    segment,
-    guestName,
-    guestCompany,
-    youtubeUrl,
-    thumbnail{ ..., "lqip": asset->metadata.lqip },
-    description,
-    publishedAt
-  }
-`)
+/**
+ * Guest count for the home page's "on the record" caption. Episode counts now
+ * come from lib/episodes.ts, which merges the YouTube feeds with these documents.
+ */
+export const GUEST_COUNT_QUERY = defineQuery(`count(*[_type == "guest"])`)
 
 export const ALL_EPISODES_QUERY = defineQuery(`
-  *[_type == "episode"] | order(episodeNumber desc) {
+  *[_type == "episode"] | order(publishedAt desc, episodeNumber desc) {
     _id,
     title,
     episodeNumber,
@@ -26,9 +16,9 @@ export const ALL_EPISODES_QUERY = defineQuery(`
     guestName,
     guestCompany,
     youtubeUrl,
+    thumbnail,
     description,
-    publishedAt,
-    featured
+    publishedAt
   }
 `)
 
@@ -124,7 +114,7 @@ export const ALL_SERVICES_QUERY = defineQuery(`
     image{ ..., "lqip": asset->metadata.lqip },
     features,
     perfectFor,
-    featured,
+    group,
     pricingRows,
     pricingNote
   }

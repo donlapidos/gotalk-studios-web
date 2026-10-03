@@ -43,7 +43,7 @@ export default function GalleryLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[70] bg-[#0E0E0E]/[0.92] backdrop-blur-md flex items-center justify-center p-4 sm:p-12"
+      className="fixed inset-0 z-[70] bg-surface-sunken/[0.92] backdrop-blur-md flex items-center justify-center p-4 sm:p-12"
       role="dialog"
       aria-modal="true"
       aria-label={item.title}
@@ -60,7 +60,7 @@ export default function GalleryLightbox({
         type="button"
         onClick={onPrev}
         aria-label="Previous"
-        className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white font-[family-name:var(--font-bebas-neue)] text-4xl p-3 z-10"
+        className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white font-display text-4xl p-3 z-10"
       >
         ←
       </button>
@@ -68,7 +68,7 @@ export default function GalleryLightbox({
         type="button"
         onClick={onNext}
         aria-label="Next"
-        className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white font-[family-name:var(--font-bebas-neue)] text-4xl p-3 z-10"
+        className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white font-display text-4xl p-3 z-10"
       >
         →
       </button>
@@ -76,7 +76,7 @@ export default function GalleryLightbox({
       <div className="flex flex-col lg:flex-row gap-1 max-w-5xl w-full max-h-[85vh] shadow-[0_24px_48px_rgba(0,0,0,0.5)] overflow-auto lg:overflow-visible">
         {/* Media pane */}
         <div
-          className={`gallery-protect relative lg:flex-[1.6] bg-[#1C1B1B] overflow-hidden min-w-0 shrink-0 ${
+          className={`gallery-protect relative lg:flex-[1.6] bg-surface-raised overflow-hidden min-w-0 shrink-0 ${
             isPhoto ? 'max-h-[60vh] lg:max-h-none' : 'aspect-video'
           }`}
           style={photoAspect ? { aspectRatio: String(photoAspect) } : undefined}
@@ -103,23 +103,23 @@ export default function GalleryLightbox({
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white/20 text-xs tracking-widest uppercase">No media available</span>
+              <span className="text-white/55 text-xs tracking-widest uppercase">No media available</span>
             </div>
           )}
         </div>
 
         {/* Info pane */}
-        <div className="lg:flex-1 bg-[#232221] p-7 lg:p-9 flex flex-col gap-4 overflow-auto">
+        <div className="lg:flex-1 bg-surface-overlay p-7 lg:p-9 flex flex-col gap-4 overflow-auto">
           <div className="inline-flex items-center gap-3">
-            <span className="w-8 h-[2px] bg-[#CC0000] inline-block" />
-            <span className="text-[#CC0000] text-[11px] font-bold tracking-[0.3em] uppercase">
+            <span className="w-8 h-[2px] bg-brand-red inline-block" />
+            <span className="text-accent text-2xs font-bold tracking-label uppercase">
               {item.collection?.name ?? 'GoTalk Studios'}
             </span>
           </div>
-          <h2 className="font-[family-name:var(--font-bebas-neue)] text-4xl leading-[0.95] tracking-[0.025em] uppercase text-[#E5E2E1]">
+          <h2 className="font-display text-4xl leading-[0.95] tracking-[0.025em] uppercase text-surface-light-alt">
             {item.title}
           </h2>
-          <span className="text-[11px] font-semibold tracking-[0.25em] uppercase text-white/40">
+          <span className="text-2xs font-semibold tracking-label uppercase text-white/55">
             {item.collection?.badge}
             {item.duration ? ` · ${item.duration}` : ''}
           </span>
@@ -130,20 +130,20 @@ export default function GalleryLightbox({
           <div className="mt-auto flex flex-col gap-4 pt-4">
             {isPhoto ? (
               <>
-                <div className="bg-[#2A2A2A] px-5 py-4 flex items-baseline justify-between">
-                  <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/45">Single Frame</span>
-                  <span className="font-[family-name:var(--font-bebas-neue)] text-3xl text-[#E5E2E1]">
+                <div className="bg-surface-overlay px-5 py-4 flex items-baseline justify-between">
+                  <span className="text-2xs font-bold tracking-label uppercase text-white/45">Single Frame</span>
+                  <span className="font-display text-3xl text-surface-light-alt">
                     RM {settings.singlePrice}
                   </span>
                 </div>
-                <span className="text-[11px] tracking-[0.1em] uppercase text-white/40">{packsLine}</span>
+                <span className="text-2xs tracking-wide uppercase text-white/55">{packsLine}</span>
                 <button
                   type="button"
                   onClick={onToggle}
-                  className={`text-xs font-bold tracking-[0.2em] uppercase px-7 py-4 transition-all ${
+                  className={`text-xs font-bold tracking-label uppercase px-7 py-4 transition-all ${
                     selected
                       ? 'bg-transparent text-white outline outline-1 -outline-offset-1 outline-white/35'
-                      : 'bg-[#CC0000] text-white hover:bg-[#AA0000]'
+                      : 'bg-brand-red text-white hover:bg-brand-red-hover'
                   }`}
                 >
                   {selected ? 'REMOVE FROM SELECTION' : 'ADD TO SELECTION →'}

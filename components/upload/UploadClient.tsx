@@ -59,9 +59,9 @@ async function processPhoto(file: File, watermarkText: string): Promise<Blob> {
 }
 
 const inputCls =
-  'bg-[#1A1A1A] border border-white/10 text-white text-sm px-4 py-3 placeholder-white/20 focus:outline-none focus:border-[#CC0000] transition-colors w-full'
+  'bg-surface-raised border border-white/10 text-white text-sm px-4 py-3 placeholder-white/45 focus:border-brand-red transition-colors w-full'
 
-const labelCls = 'text-[10px] font-bold tracking-[0.25em] uppercase text-white/50'
+const labelCls = 'text-2xs font-bold tracking-label uppercase text-white/50'
 
 export default function UploadClient({ collections, watermarkText }: Props) {
   const [password, setPassword] = useState(
@@ -183,12 +183,12 @@ export default function UploadClient({ collections, watermarkText }: Props) {
     failed: 'FAILED',
   }
   const statusColor: Record<FileStatus, string> = {
-    queued: 'text-white/30',
+    queued: 'text-white/55',
     processing: 'text-amber-400',
     uploading: 'text-amber-400',
     done: 'text-emerald-400',
-    skipped: 'text-white/40',
-    failed: 'text-[#CC0000]',
+    skipped: 'text-white/55',
+    failed: 'text-accent',
   }
 
   return (
@@ -212,7 +212,7 @@ export default function UploadClient({ collections, watermarkText }: Props) {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-white/40 hover:text-white transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-white/55 hover:text-white transition-colors"
           >
             {showPassword ? (
               <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
@@ -242,11 +242,11 @@ export default function UploadClient({ collections, watermarkText }: Props) {
           className={`${inputCls} appearance-none`}
         >
           {cols.map((c) => (
-            <option key={c._id} value={c._id} className="bg-[#1A1A1A]">
+            <option key={c._id} value={c._id} className="bg-surface-raised">
               {c.name}
             </option>
           ))}
-          <option value="__new__" className="bg-[#1A1A1A]">
+          <option value="__new__" className="bg-surface-raised">
             ➕ New event…
           </option>
         </select>
@@ -296,13 +296,13 @@ export default function UploadClient({ collections, watermarkText }: Props) {
         }}
         onClick={() => inputRef.current?.click()}
         className={`border border-dashed px-6 py-12 text-center cursor-pointer transition-colors mb-6 ${
-          dragOver ? 'border-[#CC0000] bg-[#CC0000]/5' : 'border-white/20 hover:border-white/40'
+          dragOver ? 'border-brand-red bg-brand-red/5' : 'border-white/20 hover:border-white/40'
         }`}
       >
-        <p className="font-[family-name:var(--font-bebas-neue)] text-2xl tracking-wide text-white/70">
+        <p className="font-display text-2xl tracking-wide text-white/70">
           Drop photos here
         </p>
-        <p className="text-xs text-white/35 mt-1">
+        <p className="text-xs text-white/55 mt-1">
           or click to choose — you can select a whole event&apos;s worth at once
         </p>
         <input
@@ -321,7 +321,7 @@ export default function UploadClient({ collections, watermarkText }: Props) {
           {files.map((f) => (
             <div key={f.title} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
               <span className="text-white/70 truncate">{f.title}</span>
-              <span className={`text-[10px] font-bold tracking-[0.15em] whitespace-nowrap ${statusColor[f.status]}`}>
+              <span className={`text-2xs font-bold tracking-wide whitespace-nowrap ${statusColor[f.status]}`}>
                 {f.status === 'failed' && f.error ? `FAILED — ${f.error}` : statusLabel[f.status]}
               </span>
             </div>
@@ -329,14 +329,14 @@ export default function UploadClient({ collections, watermarkText }: Props) {
         </div>
       )}
 
-      {formError && <p className="text-sm text-[#CC0000] mb-4">{formError}</p>}
+      {formError && <p className="text-sm text-accent mb-4">{formError}</p>}
 
       <div className="flex items-center gap-4 flex-wrap">
         <button
           type="button"
           onClick={startUpload}
           disabled={busy}
-          className="bg-[#CC0000] text-white text-xs font-bold tracking-[0.2em] uppercase px-8 py-4 hover:bg-[#AA0000] active:scale-95 transition-all disabled:opacity-60"
+          className="bg-brand-red text-white text-xs font-bold tracking-label uppercase px-8 py-4 hover:bg-brand-red-hover active:scale-95 transition-all disabled:opacity-60"
         >
           {busy
             ? `Uploading… ${doneCount + skipCount}/${files.length}`
@@ -346,19 +346,19 @@ export default function UploadClient({ collections, watermarkText }: Props) {
           <button
             type="button"
             onClick={() => setFiles([])}
-            className="text-[11px] font-bold tracking-[0.2em] uppercase px-5 py-3.5 text-white/60 hover:text-white outline outline-1 -outline-offset-1 outline-white/20 hover:outline-white/50 transition-all"
+            className="text-2xs font-bold tracking-label uppercase px-5 py-3.5 text-white/60 hover:text-white outline outline-1 -outline-offset-1 outline-white/20 hover:outline-white/50 transition-all"
           >
             Clear list
           </button>
         )}
         {(doneCount > 0 || skipCount > 0 || failCount > 0) && !busy && (
-          <span className="text-xs text-white/40">
+          <span className="text-xs text-white/55">
             {doneCount} live · {skipCount} skipped · {failCount} failed
           </span>
         )}
       </div>
 
-      <p className="text-[11px] leading-relaxed text-white/35 mt-8 max-w-lg">
+      <p className="text-2xs leading-relaxed text-white/55 mt-8 max-w-lg">
         Photos are resized to 2000px and watermarked in your browser before upload — originals
         never leave your computer. Keep the full-resolution files in the team Google Drive; those
         are what buyers receive. Re-uploading the same filenames is safe: duplicates are skipped.

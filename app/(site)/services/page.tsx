@@ -1,26 +1,28 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { sanityFetch } from '@/sanity/lib/live'
 import { ALL_SERVICES_QUERY } from '@/sanity/lib/queries'
 import SanityImage from '@/components/SanityImage'
 import type { SanityImageValue } from '@/sanity/lib/image'
-import { FadeIn, FadeUp, DrawLine } from '@/components/motion'
+import { FadeIn, FadeUp } from '@/components/motion'
+import { WHATSAPP_DISPLAY, whatsappLink } from '@/lib/contact'
 
 export const metadata: Metadata = {
-  title: 'Services | GoTalk Studios',
+  title: 'Services',
   description:
-    'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+    'Rent the GoTalk podcast studio in Kuching, or hire the crew — videography, drone, and video editing for businesses, creators, and brands in Sarawak.',
   openGraph: {
-    title: 'Services | GoTalk Studios',
+    title: 'Services',
     description:
-      'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+      'Rent the GoTalk podcast studio in Kuching, or hire the crew — videography, drone, and video editing for businesses, creators, and brands in Sarawak.',
     url: 'https://gotalkstudios.com/services',
     type: 'website',
   },
   twitter: {
-    title: 'Services | GoTalk Studios',
+    title: 'Services',
     description:
-      'Professional production services for businesses, creators, and brands in Sarawak — podcast studio rental, videography, drone, and video editing.',
+      'Rent the GoTalk podcast studio in Kuching, or hire the crew — videography, drone, and video editing for businesses, creators, and brands in Sarawak.',
   },
 }
 
@@ -33,395 +35,379 @@ type PricingRow = {
 
 type Service = {
   _id: string
-  serviceNumber: string | null
   name: string
   tagline: string | null
   image: SanityImageValue | null
   features: string[] | null
   perfectFor: string | null
-  featured: boolean | null
+  group: 'room' | 'crew' | null
   pricingRows: PricingRow[] | null
   pricingNote: string | null
 }
 
-// ─── Pricing Table ────────────────────────────────────────────────────────────
+// ─── Prices ───────────────────────────────────────────────────────────────────
+//
+// Prices are free text in Sanity and arrived in four spellings ("RM 180 - RM250",
+// "RM350 - RM800", …). They are normalised here to one: "RM180–250".
 
-function PricingTable({
-  rows,
-  note,
-  compact = false,
-}: {
-  rows: PricingRow[]
-  note?: string | null
-  compact?: boolean
-}) {
-  return (
-    <div className="mt-4">
-      <div className="flex justify-between pb-2.5 border-b-2 border-[#CC0000]/50">
-        <span className="text-white/40 font-bold tracking-[0.2em] uppercase text-[9px]">
-          {compact ? 'Package' : 'Duration'}
-        </span>
-        <span className="text-white/40 font-bold tracking-[0.2em] uppercase text-[9px]">
-          Rate (RM)
-        </span>
-      </div>
-      {rows.map((row, i) => (
-        <div
-          key={i}
-          className={`flex justify-between items-center border-b border-white/[0.07] ${
-            compact ? 'py-2' : 'py-3'
-          }`}
-        >
-          <span className={`text-white/70 ${compact ? 'text-[11px]' : 'text-xs'}`}>{row.duration}</span>
-          <span className={`text-[#CC0000] font-bold tracking-wide ${compact ? 'text-[11px]' : 'text-xs'}`}>
-            {row.price}
-          </span>
-        </div>
-      ))}
-      {note && (
-        <p className="text-white/35 text-[10px] italic mt-2">{note}</p>
-      )}
-    </div>
-  )
+function numbersIn(price: string): number[] {
+  return [...price.matchAll(/\d[\d,]*/g)].map((m) => Number(m[0].replace(/,/g, '')))
 }
 
-// ─── Featured Card (full-width two-column hero card) ─────────────────────────
-
-function FeaturedCard({ service, index }: { service: Service; index: number }) {
-  const reversed = index % 2 === 1
-
-  const contentCol = (
-    <div className="bg-[#111111] p-10 lg:p-14 flex flex-col min-h-[500px] lg:min-h-[560px]">
-      <div className="flex-1">
-        {service.serviceNumber && (
-          <p
-            className="font-[family-name:var(--font-bebas-neue)] text-[#CC0000] leading-none mb-2"
-            style={{ fontSize: 'clamp(4rem, 7vw, 7rem)' }}
-          >
-            {service.serviceNumber}
-          </p>
-        )}
-
-        <h2
-          className="font-[family-name:var(--font-bebas-neue)] text-white uppercase leading-none mb-3"
-          style={{ fontSize: 'clamp(2rem, 3.5vw, 3.5rem)', letterSpacing: '0.02em' }}
-        >
-          {service.name}
-        </h2>
-
-        {service.tagline && (
-          <p className="text-[#CC0000]/60 text-[10px] font-bold tracking-[0.3em] uppercase mb-6">
-            {service.tagline}
-          </p>
-        )}
-
-        {service.features && service.features.length > 0 && (
-          <ul className="space-y-3.5 mb-7">
-            {service.features.map((feature, i) => (
-              <li key={i} className="flex items-center gap-4 group/feature">
-                <span
-                  className="w-7 h-7 border-2 border-[#CC0000] flex items-center justify-center shrink-0 text-[#CC0000] text-xs font-bold group-hover/feature:bg-[#CC0000] group-hover/feature:text-white transition-colors"
-                  aria-hidden="true"
-                >
-                  ✓
-                </span>
-                <span className="text-white/75 text-xs font-bold tracking-[0.12em] uppercase">
-                  {feature}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {service.perfectFor && (
-          <div className="bg-[#CC0000]/10 border-l-4 border-[#CC0000] px-5 py-4 mb-6">
-            <p className="text-[#CC0000] text-[9px] font-bold tracking-[0.3em] uppercase mb-1.5">
-              Perfect For
-            </p>
-            <p className="text-white/80 text-sm leading-relaxed">{service.perfectFor}</p>
-          </div>
-        )}
-      </div>
-
-      {service.pricingRows && service.pricingRows.length > 0 && (
-        <PricingTable rows={service.pricingRows} note={service.pricingNote} />
-      )}
-    </div>
-  )
-
-  const darkCol = (
-    <div
-      className="relative flex items-center justify-center overflow-hidden min-h-[280px] md:min-h-0"
-      style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #111111 50%, #0D0D0D 100%)' }}
-    >
-      {service.image?.asset ? (
-        <>
-          <SanityImage
-            image={service.image}
-            alt={service.name}
-            width={1100}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="opacity-75"
-            useHotspot
-          />
-          {/* Fade toward the content column so the photo reads as set dressing */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: reversed
-                ? 'linear-gradient(to left, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.15) 45%, rgba(17,17,17,0.4) 100%)'
-                : 'linear-gradient(to right, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.15) 45%, rgba(17,17,17,0.4) 100%)',
-            }}
-          />
-          {service.serviceNumber && (
-            <span
-              className={`absolute bottom-5 font-[family-name:var(--font-bebas-neue)] text-white/25 select-none pointer-events-none leading-none ${reversed ? 'left-7' : 'right-7'}`}
-              style={{ fontSize: 'clamp(4rem, 7vw, 6.5rem)' }}
-            >
-              {service.serviceNumber}
-            </span>
-          )}
-        </>
-      ) : (
-        <>
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: reversed
-                ? 'radial-gradient(ellipse 70% 50% at 25% 65%, rgba(204,0,0,0.1) 0%, transparent 65%)'
-                : 'radial-gradient(ellipse 70% 50% at 75% 35%, rgba(204,0,0,0.1) 0%, transparent 65%)',
-            }}
-          />
-          {service.serviceNumber && (
-            <span
-              className="font-[family-name:var(--font-bebas-neue)] text-white select-none pointer-events-none"
-              style={{
-                fontSize: 'clamp(10rem, 22vw, 20rem)',
-                lineHeight: 1,
-                opacity: 0.05,
-                letterSpacing: '-0.02em',
-              }}
-            >
-              {service.serviceNumber}
-            </span>
-          )}
-        </>
-      )}
-    </div>
-  )
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 border-l-4 border-[#CC0000] border-y border-r border-white/[0.08] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_40px_rgba(204,0,0,0.12)]">
-      {reversed ? (
-        <>{darkCol}{contentCol}</>
-      ) : (
-        <>{contentCol}{darkCol}</>
-      )}
-    </div>
-  )
+function formatPrice(price: string): string {
+  const [low, high] = numbersIn(price)
+  if (low === undefined) return price.trim()
+  const fmt = (n: number) => n.toLocaleString('en-MY')
+  return high !== undefined && high !== low ? `RM${fmt(low)}–${fmt(high)}` : `RM${fmt(low)}`
 }
 
-// ─── Compact Card ─────────────────────────────────────────────────────────────
+/** The cheapest starting price across a service's rows, with the row it belongs to. */
+function fromPrice(rows: PricingRow[]): { amount: string; per: string } | null {
+  let best: { low: number; row: PricingRow } | null = null
+  for (const row of rows) {
+    const [low] = numbersIn(row.price)
+    if (low !== undefined && (!best || low < best.low)) best = { low, row }
+  }
+  return best ? { amount: `RM${best.low.toLocaleString('en-MY')}`, per: best.row.duration } : null
+}
 
-function CompactCard({ service }: { service: Service }) {
+/** "Hourly" → "hour", "Per Session" → "session", "1 Hour" → "1 hour". */
+function perUnit(label: string): string {
+  return label.trim().replace(/^per\s+/i, '').replace(/^hourly$/i, 'hour').toLowerCase()
+}
+
+/** Rentals sit under "Rent the room"; everything else is crew. */
+function groupOf(s: Service): 'room' | 'crew' {
+  return s.group ?? (/rental/i.test(s.name) ? 'room' : 'crew')
+}
+
+// ─── Pieces ───────────────────────────────────────────────────────────────────
+
+function PriceList({ service }: { service: Service }) {
+  const rows = service.pricingRows ?? []
+  if (rows.length === 0) return null
   return (
-    <div className="relative overflow-hidden bg-[#111111] border border-white/[0.08] p-6 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-[#CC0000]/50 h-full">
-      {service.image?.asset && (
-        <>
-          <SanityImage
-            image={service.image}
-            alt=""
-            width={700}
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="opacity-100"
-            useHotspot
-          />
-          {/* Content must stay readable over the photo */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0B]/95 via-[#0B0B0B]/85 to-[#0B0B0B]/60 pointer-events-none" />
-        </>
-      )}
-      <div className="relative z-10 flex flex-col flex-1">
-      {service.serviceNumber && (
-        <p
-          className="font-[family-name:var(--font-bebas-neue)] text-[#CC0000]/60 leading-none mb-1"
-          style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
-        >
-          {service.serviceNumber}
-        </p>
-      )}
-
-      <h3
-        className="font-[family-name:var(--font-bebas-neue)] text-white uppercase leading-none mb-1.5"
-        style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2rem)' }}
-      >
-        {service.name}
-      </h3>
-
-      {service.tagline && (
-        <p className="text-[#CC0000]/60 text-[9px] font-bold tracking-[0.25em] uppercase mb-3">
-          {service.tagline}
-        </p>
-      )}
-
-      {service.features && service.features.length > 0 && (
-        <ul className="space-y-1.5 mb-4">
-          {service.features.map((feature, i) => (
-            <li key={i} className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#CC0000] shrink-0" aria-hidden="true" />
-              <span className="text-white/70 text-[11px] font-semibold tracking-[0.1em] uppercase">
-                {feature}
-              </span>
-            </li>
+    <div>
+      <table className="w-full text-sm">
+        <caption className="sr-only">{service.name} rates</caption>
+        <thead className="sr-only">
+          <tr>
+            <th scope="col">Package</th>
+            <th scope="col">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.duration} className="border-b border-white/10 last:border-b-0">
+              <th scope="row" className="py-3 pr-4 text-left font-normal text-white/70">
+                {row.duration}
+              </th>
+              <td className="py-3 text-right font-semibold text-white tabular-nums whitespace-nowrap">
+                {formatPrice(row.price)}
+              </td>
+            </tr>
           ))}
-        </ul>
-      )}
-
-      {service.perfectFor && (
-        <div className="bg-[#CC0000]/10 border-l-4 border-[#CC0000] px-3.5 py-2.5 mb-3">
-          <p className="text-[#CC0000] text-[9px] font-bold tracking-[0.3em] uppercase mb-0.5">
-            Perfect For
-          </p>
-          <p className="text-white/80 text-xs leading-relaxed">{service.perfectFor}</p>
-        </div>
-      )}
-
-      {service.pricingRows && service.pricingRows.length > 0 && (
-        <div className="mt-auto">
-          <PricingTable rows={service.pricingRows} note={service.pricingNote} compact />
-        </div>
-      )}
-      </div>
+        </tbody>
+      </table>
+      <p className="text-xs text-white/55 mt-3 leading-relaxed">
+        {service.pricingNote ?? 'Final price depends on the job; we confirm it with you when you book.'}
+      </p>
     </div>
+  )
+}
+
+function FromPrice({ service }: { service: Service }) {
+  const from = fromPrice(service.pricingRows ?? [])
+  if (!from) return null
+  return (
+    <p className="flex items-baseline gap-2 flex-wrap">
+      <span className="text-2xs font-bold tracking-label uppercase text-white/55">From</span>
+      <span className="text-2xl font-semibold text-white leading-none tabular-nums">{from.amount}</span>
+      <span className="text-sm text-white/55">/ {perUnit(from.per)}</span>
+    </p>
+  )
+}
+
+function Features({ items }: { items: string[] | null }) {
+  if (!items || items.length === 0) return null
+  return (
+    <ul className="space-y-2.5">
+      {items.map((feature) => (
+        <li key={feature} className="flex items-start gap-3 text-sm text-white/80 leading-snug">
+          <svg viewBox="0 0 16 16" className="w-4 h-4 mt-px shrink-0 text-white/40" aria-hidden="true">
+            <path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="square" />
+          </svg>
+          {/* As written, not forced into 12px tracked caps */}
+          <span>{feature}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function DownArrow() {
+  return (
+    <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 text-white/40" aria-hidden="true">
+      <path d="M8 3v9M4.5 8.5 8 12l3.5-3.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="square" />
+    </svg>
+  )
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3Z"
+      />
+    </svg>
+  )
+}
+
+/** One booking pattern everywhere: WhatsApp first, the form as the alternative. */
+function BookActions({ service }: { service: Service }) {
+  const wa = whatsappLink(`Hi GoTalk, I'd like to book ${service.name}. Is this date available: `)
+  const form = `/contact?service=${encodeURIComponent(service.name)}#book`
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      {wa ? (
+        <a
+          href={wa}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2.5 bg-brand-red hover:bg-brand-red-hover active:scale-95 transition-all text-white text-2xs font-bold tracking-label uppercase px-6 min-h-[48px] text-center"
+        >
+          <WhatsAppIcon />
+          Book on WhatsApp
+        </a>
+      ) : null}
+      <Link
+        href={form}
+        className={
+          wa
+            ? 'inline-flex items-center min-h-[44px] text-sm text-white/70 underline underline-offset-4 decoration-white/30 hover:text-white hover:decoration-white transition-colors'
+            : 'inline-flex items-center justify-center bg-brand-red hover:bg-brand-red-hover text-white text-2xs font-bold tracking-label uppercase px-6 min-h-[48px]'
+        }
+      >
+        {wa ? 'or use the booking form' : 'Book now'}
+      </Link>
+    </div>
+  )
+}
+
+// ─── Rent the room: two full cards ───────────────────────────────────────────
+
+function RoomCard({ service }: { service: Service }) {
+  return (
+    <article className="flex flex-col h-full bg-surface-raised border border-white/10 overflow-hidden">
+      {service.image?.asset && (
+        <div className="relative aspect-[16/9] overflow-hidden bg-surface-sunken">
+          <SanityImage
+            image={service.image}
+            alt={`${service.name} at GoTalk Studios`}
+            width={1100}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            useHotspot
+          />
+        </div>
+      )}
+      <div className="flex-1 flex flex-col p-6 sm:p-8 lg:p-10">
+        <h3 className="font-display text-4xl lg:text-5xl text-white tracking-wide leading-[0.95] mb-2">{service.name}</h3>
+        {service.tagline && <p className="text-base text-white/70 mb-6">{service.tagline}</p>}
+        <div className="mb-7">
+          <FromPrice service={service} />
+        </div>
+        <div className="mb-7">
+          <Features items={service.features} />
+        </div>
+        {service.perfectFor && (
+          <p className="text-sm text-white/60 leading-relaxed mb-8 max-w-[52ch]">
+            <span className="text-white/85 font-semibold">Good for</span> {service.perfectFor.charAt(0).toLowerCase() + service.perfectFor.slice(1)}
+          </p>
+        )}
+        <div className="mt-auto space-y-8">
+          <PriceList service={service} />
+          <BookActions service={service} />
+        </div>
+      </div>
+    </article>
+  )
+}
+
+// ─── Hire the crew: rows, not more boxes ─────────────────────────────────────
+
+function CrewRow({ service }: { service: Service }) {
+  return (
+    <article className="grid lg:grid-cols-12 gap-x-10 gap-y-6 py-10 lg:py-12 border-t border-white/10">
+      <div className="lg:col-span-5">
+        <h3 className="font-display text-4xl text-white tracking-wide leading-none mb-3">{service.name}</h3>
+        {service.tagline && <p className="text-base text-white/70 mb-3">{service.tagline}</p>}
+        {service.perfectFor && (
+          <p className="text-sm text-white/60 leading-relaxed max-w-[48ch] mb-5">
+            <span className="text-white/85 font-semibold">Good for</span> {service.perfectFor.charAt(0).toLowerCase() + service.perfectFor.slice(1)}
+          </p>
+        )}
+        <Features items={service.features} />
+      </div>
+      <div className="lg:col-span-4">
+        <PriceList service={service} />
+      </div>
+      <div className="lg:col-span-3 flex flex-col gap-5 lg:items-start">
+        <FromPrice service={service} />
+        <BookActions service={service} />
+      </div>
+    </article>
+  )
+}
+
+/** Same device as "On the Record" and "The Shows": display caps, last word in red. */
+function GroupHeading({ id, lead, accent, children }: { id: string; lead: string; accent: string; children: ReactNode }) {
+  return (
+    <FadeUp>
+      <div className="mb-10 lg:mb-14 pb-8 border-b border-white/10 flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
+        <h2 id={id} className="font-display text-6xl lg:text-7xl text-white tracking-wide leading-[0.85]">
+          {lead} <span className="text-brand-red">{accent}</span>
+        </h2>
+        <p className="text-base text-white/70 max-w-[44ch] lg:text-right">{children}</p>
+      </div>
+    </FadeUp>
   )
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
+//
+// Was a template: an outlined "SERVICES" headline under a "What We Offer" chip,
+// two full-bleed numbered cards off the page grid, three boxed "additional"
+// services, red-tinted "Perfect For" callouts, and a solid red closing band —
+// red spent about a dozen ways. The page now says what it actually sells, in
+// the two ways people buy it: the room, or the crew. Red is the booking button.
 
 export default async function ServicesPage() {
   const { data } = await sanityFetch({ query: ALL_SERVICES_QUERY })
   const services = (data ?? []) as Service[]
 
-  const featured = services.filter((s) => s.featured)
-  const compact = services.filter((s) => !s.featured)
+  const room = services.filter((s) => groupOf(s) === 'room')
+  const crew = services.filter((s) => groupOf(s) === 'crew')
+  const generalWa = whatsappLink("Hi GoTalk, I'd like to ask about booking the studio.")
 
   return (
-    <>
-      <main className="pt-16 bg-[#111111] min-h-screen">
+    <main id="main" tabIndex={-1} className="pt-16 bg-surface-base min-h-screen">
 
-        {/* ── Hero ─────────────────────────────────────────────── */}
-        <div className="relative bg-[#0D0D0D] border-b border-white/5 overflow-hidden">
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse 50% 80% at 0% 100%, rgba(204,0,0,0.12) 0%, transparent 65%)',
-            }}
-          />
-          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-24">
-            <FadeIn delay={0.05}>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="w-6 h-[2px] bg-[#CC0000] inline-block" />
-                <span className="text-[#CC0000] text-[11px] font-bold tracking-[0.35em] uppercase">
-                  What We Offer
-                </span>
-              </div>
-            </FadeIn>
-
-            <FadeUp delay={0.15}>
-              <h1
-                className="font-[family-name:var(--font-bebas-neue)] uppercase"
-                style={{ fontSize: 'clamp(4.5rem, 12vw, 11rem)', lineHeight: 0.9 }}
-              >
-                <span className="block text-white">STUDIO</span>
-                <span
-                  className="block"
-                  style={{ color: 'transparent', WebkitTextStroke: '2px #CC0000' }}
-                >
-                  SERVICES
-                </span>
-              </h1>
-            </FadeUp>
-
-            <FadeIn delay={0.3}>
-              <DrawLine delay={0.35} className="w-16 h-[2px] bg-[#CC0000] mt-5 mb-5" />
-              <p className="text-white/50 text-sm leading-relaxed max-w-xl">
-                Professional production services for businesses, creators, and brands in Sarawak.
-                High-fidelity gear, expert operators, and creative space.
-              </p>
-            </FadeIn>
-          </div>
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="bg-surface-sunken border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 section-y-tight">
+          <FadeUp>
+            <h1
+              className="font-display uppercase text-white leading-[0.9] tracking-wide mb-6"
+              style={{ fontSize: 'clamp(3.25rem, 8vw, 6rem)' }}
+            >
+              Rent the room.
+              <span className="block text-white/45">Hire the crew.</span>
+            </h1>
+          </FadeUp>
+          <FadeIn delay={0.15}>
+            <p className="text-white/70 text-base lg:text-lg leading-relaxed max-w-[60ch] mb-8">
+              The studio GoTalk is recorded in, open to businesses, creators, and brands in
+              Sarawak — with the gear and the operators to go with it.
+            </p>
+            <nav aria-label="Services" className="flex flex-wrap gap-x-8 gap-y-2">
+              {room.length > 0 && (
+                <a href="#room" className="inline-flex items-center gap-2 min-h-[44px] text-2xs font-bold tracking-label uppercase text-white/70 hover:text-white transition-colors">
+                  Studio rental <DownArrow />
+                </a>
+              )}
+              {crew.length > 0 && (
+                <a href="#crew" className="inline-flex items-center gap-2 min-h-[44px] text-2xs font-bold tracking-label uppercase text-white/70 hover:text-white transition-colors">
+                  Production services <DownArrow />
+                </a>
+              )}
+            </nav>
+          </FadeIn>
         </div>
+      </section>
 
-        {/* ── Featured Services — full-width hero cards ─────────── */}
-        {featured.length > 0 && (
-          <section className="space-y-[2px] pt-[2px]">
-            {featured.map((service, index) => (
-              <FadeUp key={service._id} delay={0.1 + index * 0.08}>
-                <FeaturedCard service={service} index={index} />
+      {services.length === 0 && (
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 section-y-tight">
+          <p className="text-white/70 max-w-[60ch]">
+            Our service list is being updated.{' '}
+            {generalWa ? (
+              <a href={generalWa} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4">
+                Message us on WhatsApp
+              </a>
+            ) : (
+              <Link href="/contact#book" className="text-white underline underline-offset-4">Get in touch</Link>
+            )}{' '}
+            and we&apos;ll tell you what&apos;s available.
+          </p>
+        </section>
+      )}
+
+      {/* ── Rent the room ────────────────────────────────────── */}
+      {room.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 section-y-tight scroll-mt-16" id="room" aria-labelledby="room-heading">
+          <GroupHeading id="room-heading" lead="Rent the" accent="room">
+            Book the GoTalk set for your own podcast, shoot, or livestream.
+          </GroupHeading>
+          <div className={`grid gap-4 ${room.length > 1 ? 'lg:grid-cols-2' : ''}`}>
+            {room.map((service, i) => (
+              <FadeUp key={service._id} delay={i * 0.08} className="h-full">
+                <RoomCard service={service} />
               </FadeUp>
             ))}
-          </section>
-        )}
-
-        {/* ── Additional Services — compact 3-col grid ──────────── */}
-        {compact.length > 0 && (
-          <section className="max-w-7xl mx-auto px-6 lg:px-8 py-14">
-            <FadeIn delay={0.05}>
-              <div className="flex items-center gap-3 mb-8">
-                <span className="w-6 h-[2px] bg-[#CC0000] inline-block" />
-                <span className="text-[#CC0000] text-[11px] font-bold tracking-[0.35em] uppercase">
-                  Additional Services
-                </span>
-              </div>
-            </FadeIn>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.04]">
-              {compact.map((service, index) => (
-                <FadeUp key={service._id} delay={0.05 + index * 0.06}>
-                  <CompactCard service={service} />
-                </FadeUp>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Booking CTA ──────────────────────────────────────── */}
-        <section className="relative bg-[#CC0000] py-20 px-6 lg:px-8 overflow-hidden">
-          {/* Giant watermark, as in the reference design */}
-          <div className="absolute inset-x-0 bottom-0 flex justify-center overflow-hidden pointer-events-none select-none" aria-hidden="true">
-            <span
-              className="font-[family-name:var(--font-bebas-neue)] text-white/[0.08] whitespace-nowrap leading-[0.75] tracking-widest"
-              style={{ fontSize: '20vw', transform: 'translateY(28%)' }}
-            >
-              GOTALK
-            </span>
-          </div>
-          <div className="relative z-10 max-w-3xl mx-auto text-center">
-            <h2
-              className="font-[family-name:var(--font-bebas-neue)] text-white uppercase leading-none mb-5"
-              style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', letterSpacing: '0.02em' }}
-            >
-              Ready to Book?
-            </h2>
-            <p className="text-white/80 text-sm font-bold tracking-[0.2em] uppercase mb-10">
-              Contact us to check availability and confirm your session.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/contact"
-                className="inline-block bg-white text-[#CC0000] text-xs font-bold tracking-[0.2em] uppercase px-8 py-4 hover:bg-[#F0F0EE] active:scale-95 transition-all"
-              >
-                BOOK NOW
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-block border-2 border-white text-white text-xs font-bold tracking-[0.2em] uppercase px-8 py-4 hover:bg-white/10 active:scale-95 transition-all"
-              >
-                GET IN TOUCH
-              </Link>
-            </div>
           </div>
         </section>
+      )}
 
-      </main>
-    </>
+      {/* ── Hire the crew ────────────────────────────────────── */}
+      {crew.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 section-y-tight scroll-mt-16" id="crew" aria-labelledby="crew-heading">
+          <GroupHeading id="crew-heading" lead="Hire the" accent="crew">
+            Our team films, flies, and edits for you, at the studio or on location.
+          </GroupHeading>
+          {/* The heading's rule already opens the list, so the first row drops its own. */}
+          <div className="border-b border-white/10 [&>*:first-child_article]:border-t-0 [&>*:first-child_article]:pt-0">
+            {crew.map((service) => (
+              <FadeUp key={service._id}>
+                <CrewRow service={service} />
+              </FadeUp>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Close ────────────────────────────────────────────── */}
+      <section className="bg-surface-sunken border-t border-white/5 section-y">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-6">
+            <h2 className="font-display text-white uppercase leading-[0.9] tracking-wide mb-4 text-5xl lg:text-6xl">
+              Ready to book?
+            </h2>
+            <p className="text-white/70 text-base max-w-[55ch]">
+              Tell us the service and the date. We&apos;ll check availability and confirm the price with you.
+            </p>
+          </div>
+          <div className="lg:col-span-6 flex flex-col sm:flex-row lg:justify-end items-stretch sm:items-center gap-3">
+            {generalWa && (
+              <a
+                href={generalWa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 bg-brand-red hover:bg-brand-red-hover active:scale-95 transition-all text-white text-2xs font-bold tracking-label uppercase whitespace-nowrap px-7 min-h-[52px]"
+              >
+                <WhatsAppIcon />
+                WhatsApp {WHATSAPP_DISPLAY}
+              </a>
+            )}
+            <Link
+              href="/contact#book"
+              className="inline-flex items-center justify-center border border-white/25 hover:border-white hover:bg-white/5 active:scale-95 transition-all text-white text-2xs font-bold tracking-label uppercase whitespace-nowrap px-7 min-h-[52px]"
+            >
+              Booking form
+            </Link>
+          </div>
+        </div>
+      </section>
+
+    </main>
   )
 }
